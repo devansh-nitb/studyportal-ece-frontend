@@ -30,14 +30,14 @@
   }
 }
 
-// .dashboard-main {
-//   flex-grow: 1;
-//   padding: $spacing-lg; 
-//   @include mobile {
-//     padding: $spacing-md;
-//   }
+.dashboard-main {
+  flex-grow: 1;
+  padding: $spacing-lg; 
+  @include mobile {
+    padding: $spacing-md;
+  }
 
-//   @include desktop {
-//     padding-top: $spacing-xl; 
-//   }
-// }
+  @include desktop {
+    padding-top: $spacing-xl; 
+  }
+}
