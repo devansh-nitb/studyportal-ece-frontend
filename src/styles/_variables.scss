@@ -1,94 +1,103 @@
-$light-background-color: #f5f5f7; 
-$light-text-color: #1d1d1f; 
-$light-primary-color: #007aff; 
-$light-secondary-color: #86868b; 
-$light-accent-color: #007aff; 
+$light-background-color: #f0f2f5;
+$light-text-color: #1a1a1c;
+$light-primary-color: #007aff;
+$light-secondary-color: #6a6a6e;
+$light-accent-color: #007aff;
 $light-accent-color-rgb: 0, 122, 255;
-$light-border-color: #e0e0e0; 
-$light-card-background: #ffffff; 
-$light-input-background: #ffffff; 
-$light-input-border: #d2d2d7; 
+$light-border-color: #e0e0e0;
+$light-card-background: #ffffff;
+$light-input-background: #ffffff;
+$light-input-border: #d2d2d7;
 $light-button-background: #007aff;
-$light-button-text: #ffffff; 
-$light-button-text-hover-lightened: #e0e0e0; 
-$light-hover-background: #005bb5; 
-$light-secondary-button-hover-background: #6a6a6e; 
+$light-button-text: #ffffff;
+$light-button-text-hover-lightened: #e0e0e0;
+$light-hover-background: #005bb5;
+$light-secondary-button-hover-background: #5a5a5e;
 $light-accent-button-hover-background: #005bb5;
-$light-delete-button-background: #ff3b30; 
-$light-delete-button-hover-background: #cc2925; 
+$light-delete-button-background: #ff3b30;
+$light-delete-button-hover-background: #cc2925;
 $light-success-color: #e6ffed;
-$light-success-text: #1a7f37; 
+$light-success-text: #1a7f37;
 $light-error-color: #fff0f0;
-$light-error-text: #a00000; 
-$light-info-color: #e0f2f7; 
-$light-info-text: #0056b3; 
-$light-warning-color: #fff9e6; 
-$light-warning-text-color: #856404; 
-$light-shadow-color: rgba(0, 0, 0, 0.08);
-$light-scrollbar-thumb-hover: #005bb5; 
-$light-table-even-row-background: #f8f8f8; 
+$light-error-text: #a00000;
+$light-info-color: #e0f2f7;
+$light-info-text: #0056b3;
+$light-warning-color: #fff9e6;
+$light-warning-text-color: #856404;
+$light-shadow-color: rgba(0, 0, 0, 0.05);
+$light-scrollbar-thumb-hover: #005bb5;
+$light-table-even-row-background: #f8f8f8;
+$light-gradient-start: #f8f9fa;
+$light-gradient-end: #e9ecef;
 
-//Dark mode settings here
-$dark-background-color: #1c1c1e;
-$dark-text-color: #f2f2f7; 
-$dark-primary-color: #0a84ff; 
-$dark-secondary-color: #98989d; 
-$dark-accent-color: #30d158; 
-$dark-accent-color-rgb: 46, 204, 113; 
-$dark-border-color: #3a3a3c; 
-$dark-card-background: #2c2c2e; // Dark gray cards
-$dark-input-background: #3a3a3c; // Dark gray input fields
-$dark-input-border: #545456; 
-$dark-button-background: #0a84ff; 
-$dark-button-text: #ffffff; // White text on buttons
-$dark-button-text-hover-lightened: #e0e0e0; 
-$dark-hover-background: #006ee6; // Darker blue for primary hover
-$dark-secondary-button-hover-background: #7a7a7e; // Darker gray for secondary hover
-$dark-accent-button-hover-background: #27ae60; 
-$dark-delete-button-background: #ff453a; 
-$dark-delete-button-hover-background: #cc312b; 
-$dark-success-color: #2a3a2e; 
-$dark-success-text: #4cd964; 
-$dark-error-color: #3a2a2e; 
-$dark-error-text: #ff453a; 
-$dark-info-color: #2a3a40; 
-$dark-info-text: #5ac8fa; 
-$dark-warning-color: #403a2a; 
-$dark-warning-text-color: #ffd60a; 
-$dark-shadow-color: rgba(0, 0, 0, 0.4); 
-$dark-scrollbar-thumb-hover: #006ee6; 
-$dark-table-even-row-background: #363638; 
+$dark-background-color: #121212;
+$dark-text-color: #e0e0e0;
+$dark-primary-color: #0a84ff;
+$dark-secondary-color: #8e8e93;
+$dark-accent-color: #32d74b;
+$dark-accent-color-rgb: 50, 215, 75;
+$dark-border-color: #2c2c2e;
+$dark-card-background: #1c1c1e;
+$dark-input-background: #2c2c2e;
+$dark-input-border: #48484a;
+$dark-button-background: #0a84ff;
+$dark-button-text: #ffffff;
+$dark-button-text-hover-lightened: #e0e0e0;
+$dark-hover-background: #006ee6;
+$dark-secondary-button-hover-background: #6a6a6e;
+$dark-accent-button-hover-background: #28a745;
+$dark-delete-button-background: #ff453a;
+$dark-delete-button-hover-background: #cc312b;
+$dark-success-color: #1f3a2f;
+$dark-success-text: #4cd964;
+$dark-error-color: #3a1f1f;
+$dark-error-text: #ff453a;
+$dark-info-color: #1f2f3a;
+$dark-info-text: #5ac8fa;
+$dark-warning-color: #3a3a1f;
+$dark-warning-text-color: #ffd60a;
+$dark-shadow-color: rgba(0, 0, 0, 0.6);
+$dark-scrollbar-thumb-hover: #006ee6;
+$dark-table-even-row-background: #252527;
+$dark-gradient-start: #1c1c1e;
+$dark-gradient-end: #29292b;
 
-$spacing-xxs: 0.25rem; // 4px
-$spacing-xs: 0.5rem;  // 8px
-$spacing-sm: 0.75rem; // 12px
-$spacing-md: 1rem;    // 16px
-$spacing-lg: 1.5rem;  // 24px
-$spacing-xl: 2rem;    // 32px
-$spacing-xxl: 3rem;   // 48px
+$spacing-xxs: 0.25rem;
+$spacing-xs: 0.5rem;
+$spacing-sm: 0.75rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-xxl: 3rem;
+$spacing-xxxl: 4rem;
 
-$font-size-xs: 0.75rem; // 12px
-$font-size-sm: 0.875rem; // 14px
-$font-size-base: 1rem;   // 16px
-$font-size-md: 1.125rem; // 18px
-$font-size-lg: 1.25rem;  // 20px
-$font-size-xl: 1.5rem;   // 24px
-$font-size-xxl: 2rem;    // 32px
-$font-size-xxxl: 2.5rem; // 40px
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-md: 1.125rem;
+$font-size-lg: 1.25rem;
+$font-size-xl: 1.5rem;
+$font-size-xxl: 2rem;
+$font-size-xxxl: 2.5rem;
+$font-size-xxxxl: 3.5rem;
 
-$border-radius-sm: 6px; 
-$border-radius-md: 10px; 
+$border-radius-sm: 6px;
+$border-radius-md: 10px;
 $border-radius-lg: 14px;
+$border-radius-xl: 20px;
 $border-radius-full: 50%;
 
-$shadow-xs: 0 1px 2px var(--shadow-color);
-$shadow-sm: 0 2px 4px var(--shadow-color);
-$shadow-md: 0 4px 8px var(--shadow-color);
-$shadow-lg: 0 8px 16px var(--shadow-color);
+$shadow-xs: 0 1px 3px var(--shadow-color);
+$shadow-sm: 0 3px 6px var(--shadow-color);
+$shadow-md: 0 5px 10px var(--shadow-color);
+$shadow-lg: 0 10px 20px var(--shadow-color);
+$shadow-xl: 0 15px 30px var(--shadow-color);
+
 $transition-speed-fast: 0.15s;
 $transition-speed-normal: 0.3s;
 $transition-speed-slow: 0.5s;
 $transition-ease: ease-in-out;
+
 $breakpoint-sm: 576px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 992px;

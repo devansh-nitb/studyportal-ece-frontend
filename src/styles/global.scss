@@ -1,8 +1,6 @@
-/* frontend/src/styles/global.scss */
-@import './_variables.scss'; // Ensure variables are imported first
+@import './_variables.scss';
 @import './mixins.scss';
 
-/* Universal Box-Sizing */
 *,
 *::before,
 *::after {
@@ -11,22 +9,20 @@
   padding: 0;
 }
 
-/* Base Body Styles */
 body {
   font-family: BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* Apple-like font */
   line-height: 1.6;
   background-color: var(--background-color);
   color: var(--text-color);
-  transition: background-color $transition-speed-normal $transition-ease, color $transition-speed-normal $transition-ease; /* Smooth theme transition */
+  transition: background-color $transition-speed-normal $transition-ease, color $transition-speed-normal $transition-ease;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
-  -webkit-font-smoothing: antialiased; // Smoother font rendering
-  -moz-osx-font-smoothing: grayscale; // Smoother font rendering
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Dark Mode Specific Styles */
 body.dark {
   --background-color: #{$dark-background-color};
   --text-color: #{$dark-text-color};
@@ -40,7 +36,7 @@ body.dark {
   --input-border: #{$dark-input-border};
   --button-background: #{$dark-button-background};
   --button-text: #{$dark-button-text};
-  --button-text-hover-lightened: #{$dark-button-text-hover-lightened}; // New variable
+  --button-text-hover-lightened: #{$dark-button-text-hover-lightened};
   --hover-background: #{$dark-hover-background};
   --secondary-button-hover-background: #{$dark-secondary-button-hover-background};
   --accent-button-hover-background: #{$dark-accent-button-hover-background};
@@ -57,9 +53,10 @@ body.dark {
   --shadow-color: #{$dark-shadow-color};
   --scrollbar-thumb-hover: #{$dark-scrollbar-thumb-hover};
   --table-even-row-background: #{$dark-table-even-row-background};
+  --gradient-start: #{$dark-gradient-start};
+  --gradient-end: #{$dark-gradient-end};
 }
 
-/* Light Mode Specific Styles (default) */
 body.light {
   --background-color: #{$light-background-color};
   --text-color: #{$light-text-color};
@@ -73,7 +70,7 @@ body.light {
   --input-border: #{$light-input-border};
   --button-background: #{$light-button-background};
   --button-text: #{$light-button-text};
-  --button-text-hover-lightened: #{$light-button-text-hover-lightened}; // New variable
+  --button-text-hover-lightened: #{$light-button-text-hover-lightened};
   --hover-background: #{$light-hover-background};
   --secondary-button-hover-background: #{$light-secondary-button-hover-background};
   --accent-button-hover-background: #{$light-accent-button-hover-background};
@@ -90,21 +87,22 @@ body.light {
   --shadow-color: #{$light-shadow-color};
   --scrollbar-thumb-hover: #{$light-scrollbar-thumb-hover};
   --table-even-row-background: #{$light-table-even-row-background};
+  --gradient-start: #{$light-gradient-start};
+  --gradient-end: #{$light-gradient-end};
 }
 
-/* Global Typography */
 h1, h2, h3, h4, h5, h6 {
   color: var(--primary-color);
-  margin-bottom: $spacing-sm; // Reduced margin for tighter look
-  font-weight: 600; // Slightly bolder headings
+  margin-bottom: $spacing-sm;
+  font-weight: 600;
 }
 
-h1 { font-size: $font-size-xxxl; }
-h2 { font-size: $font-size-xxl; }
-h3 { font-size: $font-size-xl; }
-h4 { font-size: $font-size-lg; }
-h5 { font-size: $font-size-md; }
-h6 { font-size: $font-size-base; }
+h1 { font-size: $font-size-xxxxl; }
+h2 { font-size: $font-size-xxxl; }
+h3 { font-size: $font-size-xxl; }
+h4 { font-size: $font-size-xl; }
+h5 { font-size: $font-size-lg; }
+h6 { font-size: $font-size-md; }
 
 
 p {
@@ -122,28 +120,26 @@ a {
   }
 }
 
-/* Global Form Elements */
 input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="number"],
-input[type="url"], // Added for consistency
+input[type="url"],
 textarea,
 select {
   @include input-field;
-  margin-bottom: $spacing-md; // Consistent margin
+  margin-bottom: $spacing-md;
 }
 
 button {
   @include button-base;
 }
 
-/* Utility Classes */
 .container {
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: $spacing-lg 0; // Consistent padding
+  padding: $spacing-lg 0;
 }
 
 .flex-center {
@@ -157,9 +153,9 @@ button {
 .message-box {
   padding: $spacing-md;
   border-radius: $border-radius-sm;
-  margin-bottom: $spacing-lg; // More space below messages
+  margin-bottom: $spacing-lg;
   font-size: $font-size-sm;
-  border: 1px solid transparent; // Default transparent border
+  border: 1px solid transparent;
 
   &.success {
     background-color: var(--success-color);
@@ -183,7 +179,6 @@ button {
   }
 }
 
-/* App specific layout */
 .app-container {
   display: flex;
   flex-direction: column;
