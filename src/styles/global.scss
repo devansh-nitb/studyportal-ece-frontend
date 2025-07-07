@@ -1,6 +1,6 @@
 @import './_variables.scss';
 @import './mixins.scss';
-
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
 *,
 *::before,
 *::after {
@@ -10,7 +10,10 @@
 }
 
 body {
-  font-family: BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* Apple-like font */
+  font-family: "Geist", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: weight;
+  font-style: normal;
   line-height: 1.6;
   background-color: var(--background-color);
   color: var(--text-color);
