@@ -1,0 +1,66 @@
+@import '../styles/variables'; 
+@import '../styles/mixins';
+
+.admin-page {
+  padding: $spacing-lg;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+
+  @include mobile {
+    padding: $spacing-md;
+  }
+
+  h2 {
+    color: var(--primary-color);
+    margin-bottom: $spacing-xl;
+    text-align: center;
+    font-size: $font-size-xxl;
+
+    @include mobile {
+      font-size: $font-size-xl;
+    }
+  }
+
+  .admin-tabs {
+    @include flex-center;
+    flex-wrap: wrap; 
+    gap: $spacing-sm;
+    margin-bottom: $spacing-lg;
+    background-color: var(--card-background);
+    padding: $spacing-md;
+    border-radius: $border-radius-md;
+    box-shadow: $shadow-xs;
+    border: 1px solid var(--border-color);
+
+    .tab-button {
+      @include secondary-button;
+      padding: $spacing-xs $spacing-md;
+      font-size: $font-size-sm;
+      background-color: var(--input-background); // Lighter background for tabs
+      color: var(--text-color);
+      flex-grow: 1; 
+      text-align: center;
+      white-space: nowrap; 
+
+      &:hover {
+        background-color: var(--secondary-button-hover-background);
+        color: var(--button-text);
+      }
+
+      &.active {
+        background-color: var(--primary-color);
+        color: var(--button-text);
+        font-weight: 600;
+        box-shadow: $shadow-sm;
+        transform: translateY(-1px); 
+      }
+    }
+  }
+
+  // .admin-content {
+  //   @include card-style;
+  //   padding: $spacing-xl;
+  //   margin-top: $spacing-lg; 
+  // }
+}

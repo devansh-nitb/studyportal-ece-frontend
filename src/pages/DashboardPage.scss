@@ -1,0 +1,95 @@
+@import '../styles/variables';
+@import '../styles/mixins';
+
+.dashboard-page {
+  padding: $spacing-lg;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+
+  @include mobile {
+    padding: $spacing-md;
+  }
+
+  h2 {
+    color: var(--primary-color);
+    margin-bottom: $spacing-xl;
+    text-align: center;
+    font-size: $font-size-xxl;
+
+    @include mobile {
+      font-size: $font-size-xl;
+    }
+  }
+
+
+  .semester-section {
+    @include card-style;
+    padding: $spacing-xl;
+    text-align: center;
+    margin-top: $spacing-lg; 
+
+    h2 {
+      color: var(--primary-color);
+      margin-bottom: $spacing-lg;
+      font-size: $font-size-xxl;
+
+      @include mobile {
+        font-size: $font-size-xl;
+      }
+    }
+
+    .subjects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: $spacing-lg;
+      justify-content: center; 
+      align-items: stretch;
+
+      @include mobile {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: $spacing-md;
+      }
+    }
+
+    .no-subjects-message {
+      color: var(--secondary-color);
+      font-size: $font-size-base;
+      padding: $spacing-lg;
+    }
+  }
+
+  .dashboard-error {
+    text-align: center;
+    margin-top: $spacing-lg;
+  }
+
+  .navigation-header {
+    @include flex-between; 
+    margin-bottom: $spacing-lg;
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid var(--border-color);
+
+    .back-button {
+      @include secondary-button;
+      font-size: $font-size-sm;
+      padding: $spacing-xs $spacing-md;
+      display: flex;
+      align-items: center;
+      gap: $spacing-xxs;
+    }
+
+    .current-file-title,
+    .current-category-title,
+    .current-subject-title {
+      color: var(--primary-color);
+      font-size: $font-size-xl;
+      margin: 0; 
+      text-align: right;
+
+      @include mobile {
+        font-size: $font-size-lg;
+      }
+    }
+  }
+}

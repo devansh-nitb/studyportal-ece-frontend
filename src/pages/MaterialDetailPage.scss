@@ -1,0 +1,38 @@
+@import '../styles/variables';
+@import '../styles/mixins';
+
+.material-detail-page {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--background-color); 
+  z-index: 2000; 
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; 
+
+
+  padding: 0;
+  margin: 0;
+
+  .material-detail-page-loading,
+  .material-detail-page-error,
+  .material-detail-page-info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+    padding: $spacing-xl;
+    border-radius: $border-radius-md;
+    box-shadow: $shadow-lg;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+  }
+}

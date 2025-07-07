@@ -1,0 +1,170 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.sidebar {
+  width: 250px;
+  background-color: var(--card-background); 
+  color: var(--text-color);
+  padding: $spacing-lg $spacing-md;
+  box-shadow: $shadow-lg;
+  position: fixed; 
+  top: 0;
+  left: -250px; 
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: left $transition-speed-normal $transition-ease;
+  z-index: 1000; // Ensure it's above other content on mobile
+
+  &.open {
+    left: 0; 
+  }
+
+  @include mobile {
+    width: 200px; 
+    left: -200px;
+    &.open {
+      left: 0;
+    }
+  }
+
+  @include desktop {
+    position: sticky; 
+    top: 0; 
+    left: 0; 
+    height: 100vh;
+    box-shadow: none; 
+    border-right: 1px solid var(--border-color); 
+    padding: $spacing-xl $spacing-md; 
+    grid-column: 1 / 2; 
+    grid-row: 1 / 3;
+    display: flex; 
+    flex-direction: column;
+    z-index: auto; 
+  }
+
+  .sidebar-header {
+    @include flex-between;
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: $spacing-lg;
+
+    h3 {
+      color: var(--primary-color);
+      font-size: $font-size-xl;
+      margin: 0;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: $font-size-xxl;
+      color: var(--secondary-color);
+      cursor: pointer;
+      transition: color $transition-speed-fast $transition-ease;
+      &:hover {
+        color: var(--delete-button-background);
+      }
+      @include desktop {
+        display: none; 
+      }
+    }
+  }
+
+  .sidebar-nav {
+    flex-grow: 1;
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        margin-bottom: $spacing-sm;
+
+        a {
+          display: flex;
+          align-items: center;
+          gap: $spacing-md;
+          padding: $spacing-sm $spacing-md;
+          color: var(--text-color);
+          text-decoration: none;
+          border-radius: $border-radius-sm;
+          transition: background-color $transition-speed-fast $transition-ease, color $transition-speed-fast $transition-ease;
+          font-size: $font-size-base;
+          font-weight: 500;
+
+          .nav-icon {
+            font-size: $font-size-lg;
+            color: var(--primary-color); 
+            transition: color $transition-speed-fast $transition-ease;
+          }
+
+          &:hover {
+            background-color: var(--hover-background);
+            color: var(--button-text); 
+            .nav-icon {
+              color: var(--button-text); 
+            }
+          }
+
+          &.active { 
+            background-color: var(--primary-color);
+            color: var(--button-text);
+            .nav-icon {
+              color: var(--button-text);
+            }
+          }
+        }
+      }
+    }
+  }
+  .title-name{
+    font-family: Poppins;
+  }
+  .sidebar-footer {
+    padding-top: $spacing-lg;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    .theme-toggle {
+      @include flex-center;
+      gap: $spacing-sm;
+      padding: $spacing-sm $spacing-md;
+      background-color: var(--input-background);
+      border-radius: $border-radius-md;
+      cursor: pointer;
+      box-shadow: $shadow-xs;
+      transition: background-color $transition-speed-fast $transition-ease, box-shadow $transition-speed-fast $transition-ease;
+      font-size: $font-size-base;
+      color: var(--text-color);
+
+      .theme-icon {
+        font-size: $font-size-lg;
+        color: var(--primary-color);
+      }
+
+      &:hover {
+        background-color: var(--hover-background);
+        color: var(--button-text);
+        .theme-icon {
+          color: var(--button-text);
+        }
+      }
+    }
+
+    .logout-btn {
+      @include primary-button;
+      background-color: var(--delete-button-background); // Use delete color for logout
+      &:hover {
+        background-color: var(--delete-button-hover-background);
+      }
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: $spacing-sm;
+      width: 100%;
+    }
+  }
+}

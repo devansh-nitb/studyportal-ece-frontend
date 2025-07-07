@@ -1,0 +1,141 @@
+/* frontend/src/styles/mixins.scss */
+
+@import './_variables.scss';
+
+// Flexbox Mixins
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// Responsive Mixins
+@mixin mobile {
+  @media (max-width: ($breakpoint-sm - 1px)) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: $breakpoint-sm) and (max-width: ($breakpoint-lg - 1px)) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+// Card/Panel Styling
+@mixin card-style {
+  background-color: var(--card-background);
+  border-radius: $border-radius-lg; // Slightly larger radius for cards
+  box-shadow: $shadow-md; // More pronounced shadow for cards
+  padding: $spacing-xl;
+  margin-bottom: $spacing-lg;
+  border: 1px solid var(--border-color); // Subtle border
+}
+
+// Button Styling
+@mixin button-base {
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  border-radius: $border-radius-md; // Consistent button radius
+  cursor: pointer;
+  font-size: $font-size-base;
+  transition: background-color $transition-speed-fast $transition-ease, transform 0.1s ease, box-shadow $transition-speed-fast $transition-ease; // Add box-shadow transition
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: $shadow-sm; // Subtle lift on hover
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: $shadow-xs; // Press effect
+  }
+
+  &:disabled {
+    opacity: 0.6; // Slightly more visible disabled state
+    cursor: not-allowed;
+    background-color: var(--input-border); // Neutral background for disabled
+    color: var(--secondary-color); // Muted text for disabled
+    box-shadow: none;
+    transform: translateY(0);
+  }
+}
+
+@mixin primary-button {
+  @include button-base;
+  background-color: var(--button-background);
+  color: var(--button-text);
+
+  &:hover {
+    background-color: var(--hover-background);
+  }
+}
+
+@mixin secondary-button {
+  @include button-base;
+  background-color: var(--secondary-color);
+  color: var(--button-text); // Assuming white text on secondary buttons too
+
+  &:hover {
+    background-color: var(--secondary-button-hover-background);
+  }
+}
+
+// Input Field Styling
+@mixin input-field {
+  width: 100%;
+  padding: $spacing-sm;
+  margin-bottom: $spacing-md;
+  border: 1px solid var(--input-border);
+  border-radius: $border-radius-sm;
+  background-color: var(--input-background);
+  color: var(--text-color);
+  font-size: $font-size-base;
+  transition: border-color $transition-speed-fast $transition-ease, box-shadow $transition-speed-fast $transition-ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.2); // Apple-like focus ring
+  }
+}
+
+// Scrollbar Styling (Webkit browsers)
+@mixin custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    &:hover {
+      background-color: var(--scrollbar-thumb-hover);
+    }
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: var(--card-background); // Match track to card background
+    border-radius: 10px;
+  }
+}

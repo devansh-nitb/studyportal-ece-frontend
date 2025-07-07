@@ -1,0 +1,111 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.file-list-container {
+  @include card-style;
+  margin-top: $spacing-lg;
+  padding: $spacing-xl;
+
+  h3 {
+    color: var(--primary-color);
+    margin-bottom: $spacing-lg;
+    text-align: center;
+    font-size: $font-size-xl;
+  }
+
+  .no-files-message {
+    text-align: center;
+    color: var(--secondary-color);
+    font-size: $font-size-base;
+    padding: $spacing-lg;
+  }
+
+  .file-items-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--input-background);
+      border: 1px solid var(--border-color);
+      border-radius: $border-radius-md;
+      padding: $spacing-md;
+      margin-bottom: $spacing-md;
+      box-shadow: $shadow-xs; 
+      transition: background-color $transition-speed-fast $transition-ease, box-shadow $transition-speed-fast $transition-ease, transform $transition-speed-fast $transition-ease;
+
+      &:hover {
+        background-color: var(--hover-background);
+        box-shadow: $shadow-sm; 
+        transform: translateY(-2px);
+        .file-info .file-title {
+          color: var(--button-text);
+        }
+        .file-info .file-icon {
+          color: var(--button-text);
+        }
+        .file-info .file-description {
+          color: var(--button-text-hover-lightened); 
+        }
+      }
+
+      .file-info {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        cursor: pointer;
+        padding-right: $spacing-md;
+
+        .file-icon {
+          font-size: $font-size-xxl;
+          margin-right: $spacing-md;
+          color: var(--accent-color);
+          transition: color $transition-speed-fast $transition-ease;
+
+          &.pdf-icon { color: #e74c3c; } // Red for PDF
+          &.image-icon { color: #2ecc71; } // Green for Image
+          &.url-icon { color: #3498db; } // Blue for URL
+        }
+
+        .file-details {
+          display: flex;
+          flex-direction: column;
+          text-align: left;
+        }
+
+        .file-title {
+          font-size: $font-size-base;
+          font-weight: 500;
+          color: var(--text-color);
+          transition: color $transition-speed-fast $transition-ease;
+        }
+
+        .file-description {
+          font-size: $font-size-sm;
+          color: var(--secondary-color);
+          margin-top: $spacing-xxs; // Small space below title
+          transition: color $transition-speed-fast $transition-ease;
+        }
+      }
+
+      .download-button {
+        @include primary-button;
+        background-color: var(--accent-color);
+        color: var(--button-text);
+        padding: $spacing-xs $spacing-sm;
+        font-size: $font-size-sm;
+        display: flex;
+        align-items: center;
+        gap: $spacing-xxs;
+        text-decoration: none;
+
+        &:hover {
+          background-color: var(--accent-button-hover-background);
+        }
+      }
+    }
+  }
+}

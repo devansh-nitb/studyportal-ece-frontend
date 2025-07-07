@@ -1,0 +1,110 @@
+@import '../../styles/variables'; 
+@import '../../styles/mixins';
+
+.dashboard-header {
+  background-color: var(--card-background);
+  color: var(--text-color);
+  padding: $spacing-md $spacing-xl;
+  box-shadow: $shadow-sm;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 999; 
+
+  @include mobile {
+    padding: $spacing-sm $spacing-md;
+  }
+
+  @include desktop {
+    grid-column: 2 / 3; 
+    grid-row: 1 / 2; 
+  }
+
+  .menu-toggle-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: $font-size-xl;
+    cursor: pointer;
+    display: block; 
+    @include desktop {
+      display: none;
+    }
+  }
+
+  .welcome-section {
+    flex-grow: 1;
+    text-align: center; 
+    @include desktop {
+      text-align: left;
+      margin-left: $spacing-lg; 
+    }
+
+    .welcome-text {
+      margin: 0;
+      font-size: $font-size-xl;
+      color: var(--primary-color);
+
+      @include mobile {
+        font-size: $font-size-lg;
+      }
+    }
+
+    .scholar-number {
+      font-size: $font-size-sm;
+      color: var(--secondary-color);
+      display: block; 
+      margin-top: $spacing-xxs;
+    }
+  }
+
+  .user-profile-section {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .profile-icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--primary-color);
+      font-size: $font-size-xl;
+      padding: $spacing-xs;
+      border-radius: $border-radius-full;
+      transition: background-color $transition-speed-fast $transition-ease;
+
+      &:hover {
+        background-color: var(--hover-background);
+        color: var(--button-text);
+      }
+
+      .profile-icon {
+        font-size: $font-size-xl; 
+      }
+    }
+
+    .profile-dropdown {
+      @include card-style; 
+      position: absolute;
+      top: calc(100% + $spacing-sm);
+      right: 0;
+      width: 250px;
+      padding: $spacing-md;
+      z-index: 1001; 
+      text-align: left;
+      font-size: $font-size-sm;
+
+      p {
+        margin-bottom: $spacing-xs;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        strong {
+          color: var(--primary-color);
+        }
+      }
+    }
+  }
+}

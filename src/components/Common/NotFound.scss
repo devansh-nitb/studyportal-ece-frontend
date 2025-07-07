@@ -1,0 +1,34 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.not-found-container {
+  @include flex-column-center;
+  min-height: 100vh;
+  text-align: center;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  padding: $spacing-xl;
+
+  h1 {
+    font-size: 8rem;
+    color: var(--primary-color);
+    margin-bottom: $spacing-md;
+
+    @include mobile {
+      font-size: 6rem;
+    }
+  }
+
+  p {
+    font-size: $font-size-lg;
+    margin-bottom: $spacing-lg;
+    color: var(--secondary-color);
+  }
+
+  .home-link {
+    @include primary-button;
+    padding: $spacing-sm $spacing-lg;
+    font-size: $font-size-base;
+    text-decoration: none; 
+  }
+}

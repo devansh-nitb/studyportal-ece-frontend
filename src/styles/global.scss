@@ -1,0 +1,199 @@
+/* frontend/src/styles/global.scss */
+@import './_variables.scss'; // Ensure variables are imported first
+@import './mixins.scss';
+
+/* Universal Box-Sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Base Body Styles */
+body {
+  font-family: BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* Apple-like font */
+  line-height: 1.6;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color $transition-speed-normal $transition-ease, color $transition-speed-normal $transition-ease; /* Smooth theme transition */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  -webkit-font-smoothing: antialiased; // Smoother font rendering
+  -moz-osx-font-smoothing: grayscale; // Smoother font rendering
+}
+
+/* Dark Mode Specific Styles */
+body.dark {
+  --background-color: #{$dark-background-color};
+  --text-color: #{$dark-text-color};
+  --primary-color: #{$dark-primary-color};
+  --secondary-color: #{$dark-secondary-color};
+  --accent-color: #{$dark-accent-color};
+  --accent-color-rgb: #{$dark-accent-color-rgb};
+  --border-color: #{$dark-border-color};
+  --card-background: #{$dark-card-background};
+  --input-background: #{$dark-input-background};
+  --input-border: #{$dark-input-border};
+  --button-background: #{$dark-button-background};
+  --button-text: #{$dark-button-text};
+  --button-text-hover-lightened: #{$dark-button-text-hover-lightened}; // New variable
+  --hover-background: #{$dark-hover-background};
+  --secondary-button-hover-background: #{$dark-secondary-button-hover-background};
+  --accent-button-hover-background: #{$dark-accent-button-hover-background};
+  --delete-button-background: #{$dark-delete-button-background};
+  --delete-button-hover-background: #{$dark-delete-button-hover-background};
+  --success-color: #{$dark-success-color};
+  --success-text: #{$dark-success-text};
+  --error-color: #{$dark-error-color};
+  --error-text: #{$dark-error-text};
+  --info-color: #{$dark-info-color};
+  --info-text: #{$dark-info-text};
+  --warning-color: #{$dark-warning-color};
+  --warning-text-color: #{$dark-warning-text-color};
+  --shadow-color: #{$dark-shadow-color};
+  --scrollbar-thumb-hover: #{$dark-scrollbar-thumb-hover};
+  --table-even-row-background: #{$dark-table-even-row-background};
+}
+
+/* Light Mode Specific Styles (default) */
+body.light {
+  --background-color: #{$light-background-color};
+  --text-color: #{$light-text-color};
+  --primary-color: #{$light-primary-color};
+  --secondary-color: #{$light-secondary-color};
+  --accent-color: #{$light-accent-color};
+  --accent-color-rgb: #{$light-accent-color-rgb};
+  --border-color: #{$light-border-color};
+  --card-background: #{$light-card-background};
+  --input-background: #{$light-input-background};
+  --input-border: #{$light-input-border};
+  --button-background: #{$light-button-background};
+  --button-text: #{$light-button-text};
+  --button-text-hover-lightened: #{$light-button-text-hover-lightened}; // New variable
+  --hover-background: #{$light-hover-background};
+  --secondary-button-hover-background: #{$light-secondary-button-hover-background};
+  --accent-button-hover-background: #{$light-accent-button-hover-background};
+  --delete-button-background: #{$light-delete-button-background};
+  --delete-button-hover-background: #{$light-delete-button-hover-background};
+  --success-color: #{$light-success-color};
+  --success-text: #{$light-success-text};
+  --error-color: #{$light-error-color};
+  --error-text: #{$light-error-text};
+  --info-color: #{$light-info-color};
+  --info-text: #{$light-info-text};
+  --warning-color: #{$light-warning-color};
+  --warning-text-color: #{$light-warning-text-color};
+  --shadow-color: #{$light-shadow-color};
+  --scrollbar-thumb-hover: #{$light-scrollbar-thumb-hover};
+  --table-even-row-background: #{$light-table-even-row-background};
+}
+
+/* Global Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary-color);
+  margin-bottom: $spacing-sm; // Reduced margin for tighter look
+  font-weight: 600; // Slightly bolder headings
+}
+
+h1 { font-size: $font-size-xxxl; }
+h2 { font-size: $font-size-xxl; }
+h3 { font-size: $font-size-xl; }
+h4 { font-size: $font-size-lg; }
+h5 { font-size: $font-size-md; }
+h6 { font-size: $font-size-base; }
+
+
+p {
+  margin-bottom: $spacing-md;
+  font-size: $font-size-base;
+  color: var(--text-color);
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: text-decoration $transition-speed-fast $transition-ease;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+/* Global Form Elements */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="url"], // Added for consistency
+textarea,
+select {
+  @include input-field;
+  margin-bottom: $spacing-md; // Consistent margin
+}
+
+button {
+  @include button-base;
+}
+
+/* Utility Classes */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-lg 0; // Consistent padding
+}
+
+.flex-center {
+  @include flex-center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.message-box {
+  padding: $spacing-md;
+  border-radius: $border-radius-sm;
+  margin-bottom: $spacing-lg; // More space below messages
+  font-size: $font-size-sm;
+  border: 1px solid transparent; // Default transparent border
+
+  &.success {
+    background-color: var(--success-color);
+    color: var(--success-text);
+    border-color: var(--success-color);
+  }
+  &.error {
+    background-color: var(--error-color);
+    color: var(--error-text);
+    border-color: var(--error-color);
+  }
+  &.info {
+    background-color: var(--info-color);
+    color: var(--info-text);
+    border-color: var(--info-color);
+  }
+  &.warning {
+    background-color: var(--warning-color);
+    color: var(--warning-text-color);
+    border-color: var(--warning-color);
+  }
+}
+
+/* App specific layout */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.app-loading {
+  @include flex-center;
+  min-height: 100vh;
+  font-size: $font-size-xl;
+  color: var(--primary-color);
+}
