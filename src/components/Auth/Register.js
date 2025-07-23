@@ -104,7 +104,7 @@ const Register = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="section">Section (Enter among ECE-1, ECE-2, ECE-3)</label>
+            <label htmlFor="section">Section (Enter ANY ONE among ECE-1, ECE-2, ECE-3)</label>
             <input
               type="text"
               id="section"
