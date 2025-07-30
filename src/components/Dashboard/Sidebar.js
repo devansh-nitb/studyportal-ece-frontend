@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
 import {
-  FaHome, FaBook, FaUpload, FaBullhorn, FaCommentDots, FaSignOutAlt, FaSun, FaMoon, FaUserShield
+  FaHome, FaBook, FaUpload, FaBullhorn, FaCommentDots, FaSignOutAlt, FaSun, FaMoon, FaUserShield, FaGraduationCap, FaLightbulb
 } from 'react-icons/fa'; 
 import './Sidebar.scss'; 
 
@@ -18,32 +18,42 @@ const Sidebar = ({ isOpen, toggleSidebar, handleShowStudyMaterials, handleShowAn
   };
 
   const onStudyMaterialsClick = () => {
-    handleShowStudyMaterials(); 
-    toggleSidebar(); 
-    navigate('/dashboard'); 
+    handleShowStudyMaterials();
+    toggleSidebar();
+    navigate('/dashboard');
   };
 
   const onAnnouncementsClick = () => {
-    handleShowAnnouncements(); 
-    toggleSidebar(); 
-    navigate('/dashboard'); 
+    handleShowAnnouncements();
+    toggleSidebar();
+    navigate('/dashboard');
   };
 
   const onFeedbackClick = () => {
-    handleShowFeedback(); 
-    toggleSidebar(); 
-    navigate('/dashboard'); 
+    handleShowFeedback();
+    toggleSidebar();
+    navigate('/dashboard');
   };
 
   const onAdminPanelClick = () => {
-    toggleSidebar(); 
-    navigate('/admin'); 
+    toggleSidebar();
+    navigate('/admin');
+  };
+
+  const onSyllabusViewClick = () => {
+    toggleSidebar();
+    navigate('/syllabus-view', { state: { previousView: 'announcements' } }); 
+  };
+
+  const onGuidelinesViewClick = () => {
+    toggleSidebar();
+    navigate('/guidelines-view', { state: { previousView: 'announcements' } }); 
   };
 
   return (
     <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
-        <h3 class='title-name'>&nbsp;&nbsp;ECE Study Portal</h3>
+        <h3>ECE Study Portal</h3>
         <button className="close-btn" onClick={toggleSidebar}>&times;</button>
       </div>
       <nav className="sidebar-nav">
@@ -73,6 +83,16 @@ const Sidebar = ({ isOpen, toggleSidebar, handleShowStudyMaterials, handleShowAn
           <li>
             <Link to="/dashboard" onClick={onFeedbackClick}>
               <FaCommentDots className="nav-icon" /> Feedback
+            </Link>
+          </li>
+          <li> 
+            <Link to="/syllabus-view" onClick={onSyllabusViewClick}>
+              <FaGraduationCap className="nav-icon" /> Syllabus
+            </Link>
+          </li>
+          <li> 
+            <Link to="/guidelines-view" onClick={onGuidelinesViewClick}>
+              <FaLightbulb className="nav-icon" /> Academic Guidelines
             </Link>
           </li>
         </ul>

@@ -4,7 +4,7 @@ import Header from './Header';
 import { ThemeContext } from '../../context/ThemeContext';
 import './DashboardLayout.scss'; 
 
-const DashboardLayout = ({ children, resetStudyMaterialView, handleShowStudyMaterials, handleShowAnnouncements, handleShowFeedback }) => {
+const DashboardLayout = ({ children, handleShowStudyMaterials, handleShowAnnouncements, handleShowFeedback }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { theme } = useContext(ThemeContext);
 
@@ -17,7 +17,6 @@ const DashboardLayout = ({ children, resetStudyMaterialView, handleShowStudyMate
       <Sidebar
         isOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
-        resetStudyMaterialView={resetStudyMaterialView}
         handleShowStudyMaterials={handleShowStudyMaterials}
         handleShowAnnouncements={handleShowAnnouncements}
         handleShowFeedback={handleShowFeedback}
