@@ -1,0 +1,56 @@
+
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.html-viewer-container {
+  @include card-style; 
+  padding: $spacing-xl;
+  margin-top: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - #{$spacing-xl}); 
+
+  .html-viewer-header {
+    @include flex-between;
+    margin-bottom: $spacing-lg;
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid var(--border-color);
+
+    .back-button {
+      @include secondary-button;
+      font-size: $font-size-sm;
+      padding: $spacing-xs $spacing-md;
+      display: flex;
+      align-items: center;
+      gap: $spacing-xxs;
+    }
+
+    h3 {
+      margin: 0;
+      color: var(--primary-color);
+      font-size: $font-size-xl;
+      text-align: right;
+      flex-grow: 1; 
+
+      @include mobile {
+        font-size: $font-size-lg;
+        text-align: center;
+      }
+    }
+  }
+
+  .html-viewer-content {
+    flex-grow: 1;
+    overflow: hidden; 
+    border-radius: $border-radius-md;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-background); 
+
+    .html-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background-color: var(--card-background); 
+    }
+  }
+}
