@@ -1,3 +1,4 @@
+// frontend/src/pages/DashboardPage.js
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -8,8 +9,9 @@ import FileList from '../components/Dashboard/FileList';
 import Announcements from '../components/Dashboard/Announcements';
 import FeedbackForm from '../components/Common/FeedbackForm';
 import LoadingSpinner from '../components/Common/LoadingSpinner';
+// HtmlViewer is no longer rendered directly here, but in its own routes
 import { AuthContext } from '../context/AuthContext';
-import './DashboardPage.scss'; 
+import './DashboardPage.scss'; // Page-specific styles
 
 const DashboardPage = () => {
   const { user, API_URL, token } = useContext(AuthContext);
@@ -22,13 +24,14 @@ const DashboardPage = () => {
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentView, setCurrentView] = useState('announcements');
+  const [currentView, setCurrentView] = useState('announcements'); // Default to showing announcements
 
   const resetStudyMaterialView = useCallback(() => {
     setSelectedSubject(null);
     setSelectedCategory(null);
   }, []);
 
+  // Effect to fetch initial dashboard data (semester and subjects)
   useEffect(() => {
     const fetchDashboardData = async () => {
       setLoading(true);
@@ -61,6 +64,7 @@ const DashboardPage = () => {
     }
   }, [user, API_URL, token]);
 
+  // Effect to restore previous view from navigation state
   useEffect(() => {
     if (location.state && location.state.previousView) {
       setCurrentView(location.state.previousView);
@@ -68,10 +72,11 @@ const DashboardPage = () => {
         setSelectedSubject(location.state.subject || null);
         setSelectedCategory(location.state.category || null);
       }
-      navigate(location.pathname, { replace: true, state: {} }); 
+      navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location.state, navigate, location.pathname]);
 
+  // Fetch materials for selected subject and category
   useEffect(() => {
     const fetchMaterials = async () => {
       if (selectedSubject && selectedCategory) {
@@ -119,7 +124,7 @@ const DashboardPage = () => {
     navigate(`/materials/${file._id}`, {
       state: {
         previousView: currentView,
-        subject: selectedSubject, 
+        subject: selectedSubject,
         category: selectedCategory,
       }
     });
@@ -131,12 +136,12 @@ const DashboardPage = () => {
 
   const handleShowStudyMaterials = useCallback(() => {
     setCurrentView('materials');
-    resetStudyMaterialView(); 
+    resetStudyMaterialView();
   }, [resetStudyMaterialView]);
 
   const handleShowAnnouncements = useCallback(() => {
     setCurrentView('announcements');
-    resetStudyMaterialView(); 
+    resetStudyMaterialView();
   }, [resetStudyMaterialView]);
 
   const handleShowFeedback = useCallback(() => {
@@ -144,6 +149,7 @@ const DashboardPage = () => {
     resetStudyMaterialView();
   }, [resetStudyMaterialView]);
 
+  // Removed handleShowSyllabusHtml and handleShowGuidelinesHtml from here
 
   if (loading) {
     return <DashboardLayout><LoadingSpinner /></DashboardLayout>;
@@ -155,22 +161,26 @@ const DashboardPage = () => {
 
   return (
     <DashboardLayout
-      resetStudyMaterialView={resetStudyMaterialView} 
       handleShowStudyMaterials={handleShowStudyMaterials}
       handleShowAnnouncements={handleShowAnnouncements}
       handleShowFeedback={handleShowFeedback}
+      // Removed handleShowSyllabusHtml and handleShowGuidelinesHtml from props
     >
       <div className="dashboard-page">
         {currentView === 'announcements' && <Announcements />}
         {currentView === 'feedback' && <FeedbackForm />}
+        {/* Removed HtmlViewer rendering from here */}
 
         {currentView === 'materials' && (
           <>
-            {selectedSubject && ( 
+            {/* Removed static-content-buttons from here */}
+
+            {/* Navigation Header with Back Button */}
+            {selectedSubject && (
               <div className="navigation-header">
-                {selectedCategory ? ( // If category is selected, back to categories
+                {selectedCategory ? (
                   <button onClick={handleBackToFolders} className="back-button">&larr; Back to Categories</button>
-                ) : ( 
+                ) : (
                   <button onClick={() => setSelectedSubject(null)} className="back-button">&larr; Back to Subjects</button>
                 )}
                 {selectedCategory && <h3 className="current-category-title">{selectedCategory} Materials</h3>}
