@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECE Academic Guide - 3rd Semester</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            /* margin-bottom: 40px; */
+            padding: 30px 0;
+        }
+
+        .header .title {
+            font-size: 12px;
+            font-weight: 500;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            /* margin-bottom: 15px; */
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .subjects-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .subject-tab {
+            padding: 12px 24px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            color: #495057;
+        }
+
+        .subject-tab:hover {
+            background: #e9ecef;
+            border-color: #dee2e6;
+        }
+
+        .subject-tab.active {
+            background: #1a1a1a;
+            color: white;
+            border-color: #1a1a1a;
+        }
+
+        .subject-content {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .subject-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .subject-header {
+            padding: 30px;
+            border-bottom: 1px solid #e9ecef;
+            background: #f8f9fa;
+        }
+
+        .subject-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .subject-code {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: #e9ecef;
+        }
+
+        .content-section {
+            background: white;
+            padding: 30px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f1f3f4;
+        }
+
+        .collapsible {
+            margin-bottom: 16px;
+        }
+
+        .collapsible-header {
+            padding: 16px 20px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .collapsible-header:hover {
+            background: #e9ecef;
+        }
+
+        .collapsible-header.active {
+            background: #1a1a1a;
+            color: white;
+            border-color: #1a1a1a;
+        }
+
+        .collapsible-arrow {
+            transition: transform 0.2s ease;
+            font-size: 12px;
+        }
+
+        .collapsible-header.active .collapsible-arrow {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .collapsible-content.active {
+            max-height: 800px;
+        }
+
+        .collapsible-inner {
+            padding: 20px;
+        }
+
+        .points-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .points-list li {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #1a1a1a;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .resource-item {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .resource-type {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .resource-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .resource-link:hover {
+            text-decoration: underline;
+        }
+
+        .note-box {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .note-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+
+        .note-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .note-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .subjects-nav {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .subject-tab {
+                text-align: center;
+            }
+            
+            .content-section {
+                padding: 20px;
+            }
+            
+            .subject-header {
+                padding: 20px;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 30px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">SPARK</div>
+            <h1>Electronics & Communication Engineering</h1>
+            <div class="subtitle">Third Semester Academic Guide</div>
+        </div>
+
+        <div class="subjects-nav">
+            <div class="subject-tab active" data-subject="overview">Overview</div>
+            <div class="subject-tab" data-subject="dcd">Digital Circuit Design</div>
+            <div class="subject-tab" data-subject="ecd">Electronic Circuits & Devices</div>
+            <div class="subject-tab" data-subject="sns">Signals & Systems</div>
+            <div class="subject-tab" data-subject="nas">Network Analysis & Synthesis</div>
+            <div class="subject-tab" data-subject="fod">Fundamentals of Design</div>
+            <div class="subject-tab" data-subject="math3">Mathematics-3</div>
+        </div>
+
+        <!-- Overview -->
+        <div class="subject-content active" id="overview">
+            <div class="subject-header">
+                <div class="subject-title">Academic Guidance Overview</div>
+                <div class="subject-code">Third Semester - Electronics & Communication Engineering</div>
+            </div>
+            <div class="empty-state">
+                <h3>Welcome to Your Academic Guide</h3>
+                <p>Select a subject from the tabs above to view detailed study plans, resources, and exam strategies.</p>
+            </div>
+        </div>
+
+        <!-- Digital Circuit Design -->
+        <div class="subject-content" id="dcd">
+            <div class="subject-header">
+                <div class="subject-title">Digital Circuit Design</div>
+                <!-- <div class="subject-code">DCD</div> -->
+            </div>
+            <div class="content-grid">
+                <div class="content-section">
+                    <div class="section-title">Study Plan</div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Fundamentals
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Begin with a clear understanding of number systems, binary arithmetic, and Boolean algebra</li>
+                                    <li>Master combinational logic circuits including multiplexers, decoders, encoders, and adders</li>
+                                    <li>Focus on simplification techniques like K-Maps and QM Method</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Advanced Topics
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Study sequential circuits – flip-flops, counters, registers, and shift registers</li>
+                                    <li>Use simulation tools to enhance learning</li>
+                                    <li>Focus on both theoretical explanations and design-based problem solving</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Exam Strategy
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Solve previous year papers</li>
+                                    <li>Practice design-based problems regularly</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-title">Resources</div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Recommended Books
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="resource-item">
+                                    <span class="resource-type">Textbook & Author:</span> Digital Logic and Computer Design by Morris Mano
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Online Resources
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="resource-item">
+                                    <span class="resource-type">Video Lectures:</span> 
+                                    <a href="https://youtube.com/playlist?list=PLBlnK6fEyqRjMH3mWf6kwqiTbT798eAOm&si=oGKg7qZy6UWmHsAS" 
+                                       class="resource-link" target="_blank">Digital Circuit Design Playlist</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="note-box note-warning">
+                        <div class="note-title">Study Strategy</div>
+                        Practice the solved and unsolved questions from the book completely to get marks in the exams. This subject becomes hard for end sems so take care for it.
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Electronic Circuits and Devices -->
+        <div class="subject-content" id="ecd">
+            <div class="subject-header">
+                <div class="subject-title">Electronic Circuits and Devices</div>
+                <!-- <div class="subject-code">ECD</div> -->
+            </div>
+            <div class="content-grid">
+                <div class="content-section">
+                    <div class="section-title">Mid-Semester Focus</div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Semiconductors & Diodes
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Grasp the basics of semiconductors, PN junctions, and diode characteristics</li>
+                                    <li>Understand diode applications in clipping, clamping, and rectifier circuits</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            BJT Analysis
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Study BJTs – configurations (CE, CB, CC), biasing, and load line analysis</li>
+                                    <li>Focus on small signal analysis and AC equivalent models</li>
+                                    <li>Solve numerical problems involving designing the circuits</li>
+                                    <li>Practice drawing characteristic curves and interpreting their behavior</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-title">End-Semester Focus</div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Advanced Transistor Analysis
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Understand BJT and MOSFET operation modes</li>
+                                    <li>Learn the DC and small-signal analysis of MOSFET/BJT amplifiers</li>
+                                    <li>Explore MOSFET/BJT applications in analog and digital switching circuits</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section full-width">
+                    <div class="section-title">Resources & Important Notes</div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Recommended Books
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="resource-item">
+                                    <span class="resource-type">Textbook & Author:</span> Semiconductor Physics and Devices by Donald A. Neamen
+                                </div>
+                                <div class="resource-item">
+                                    <span class="resource-type">Reference:</span> Microelectronic Circuits by Sedra and Smith
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="note-box note-warning">
+                        <div class="note-title">Study Strategy</div>
+                        NO YOUTUBE CHANNELS recommended - reading from books can only make you understand the subject in depth based upon the exam paper.
+                    </div>
+
+                    <div class="note-box note-info">
+                        <div class="note-title">Scoring Strategy</div>
+                        This subject isn't just about hard work, it mainly depends on how the paper turns out. The exam usually has tough, numerical problems that you won't find directly in class notes or books. Don't expect theory or derivation-based questions - it's all about application. Focus on understanding, not just answers.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signals and Systems -->
+        <div class="subject-content" id="sns">
+            <div class="subject-header">
+                <div class="subject-title">Signals and Systems</div>
+                <!-- <div class="subject-code">SNS</div> -->
+            </div>
+            <div class="content-grid">
+                <div class="content-section">
+                    <div class="section-title">Fundamental Concepts</div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Signal Classification
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Begin with a strong foundation in signal classification – continuous vs discrete, periodicity, energy/power, etc.</li>
+                                    <li>Understand system properties – linearity, time-invariance, causality, stability, and memory</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Time & Frequency Analysis
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Focus on convolution, unit step, and impulse response for both time and frequency domains</li>
+                                    <li>Focus on Fourier series and Fourier transforms for end-sem exams</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-title">Study Strategy</div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Practice Requirements
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Work through all assignments, class problems, and tutorial sheets</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Resources
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="resource-item">
+                                    <span class="resource-type">Textbook & Author:</span> Signals and Systems by Alan V. Oppenheim (Prefer to solve numericals given in the exercise)
+                                </div>
+                                <div class="resource-item">
+                                    <span class="resource-type">Video Lectures:</span> 
+                                    <a href="https://youtube.com/playlist?list=PLBlnK6fEyqRhG6s3jYIU48CqsT5cyiDTO&si=-QcWSKmeJzF4Rz9Q" 
+                                       class="resource-link" target="_blank">Neso Academy Playlist</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="note-box note-warning">
+                        <div class="note-title">Critical Warning</div>
+                        Consistent practice is essential in this subject, as last-minute preparation rarely results in a grade higher than a B.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Network Analysis and Synthesis -->
+        <div class="subject-content" id="nas">
+            <div class="subject-header">
+                <div class="subject-title">Network Analysis and Synthesis</div>
+                <!-- <div class="subject-code">NAS</div> -->
+            </div>
+            <div class="content-grid">
+                <div class="content-section">
+                    <div class="section-title">Circuit Fundamentals</div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Basic Elements & Laws
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Begin with a strong understanding of basic circuit elements – R, L, C and their behavior in AC/DC circuits</li>
+                                    <li>Focus on Kirchhoff's Laws, Ohm's Law, and fundamental concepts of current and voltage division</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Analysis Methods
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Focus on Mesh and Nodal Analysis, especially for multi-loop/multi-node circuits</li>
+                                    <li>Learn and practice new cases of Thevenin's and Norton's Theorems, Millman, Superposition, and Maximum Power Transfer Theorem</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-title">Advanced Topics</div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Transient & Frequency Response
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Understand transient response of RC, RL, and RLC circuits in both time and frequency domains</li>
+                                    <li>Study phasor analysis and sinusoidal steady-state behavior of circuits</li>
+                                    <li>Go through resonance, Q-factor, and bandwidth concepts in RLC circuits</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Study Strategy
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Regularly refer to class notes – many direct exam questions are based on them</li>
+                                    <li>Practice a large variety of problems, especially numericals – speed and accuracy are essential here</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section full-width">
+                    <div class="section-title">Resources</div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Study Materials
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <div class="resource-item">
+                                    <span class="resource-type">Textbook & Author:</span> Network Analysis and Synthesis by A. Chakrabarti
+                                </div>
+                                <div class="resource-item">
+                                    <span class="resource-type">Video Lectures:</span> 
+                                    <a href="https://youtube.com/playlist?list=PLBlnK6fEyqRgLR-hMp7wem-bdVN1iEhsh&si=-AeomXJMn-XsAfAz" 
+                                       class="resource-link" target="_blank">Network Analysis YouTube Playlist</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fundamentals of Design -->
+        <div class="subject-content" id="fod">
+            <div class="subject-header">
+                <div class="subject-title">Fundamentals of Design</div>
+                <!-- <div class="subject-code">FoD</div> -->
+            </div>
+            <div class="content-grid">
+                <div class="content-section full-width">
+                    <div class="section-title">Study Strategy</div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Focused Approach
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Only focus on class slides and its topics</li>
+                                    <li>For all the exams, focus on theory part and all the terms discussed in it</li>
+                                    <li>The exam question paper tests your analyticity and creative thinking ONLY and just mugged up slides</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="note-box note-warning">
+                        <div class="note-title">Important Notice</div>
+                        You will never be able to see the answer books of this subject in the entire semester, therefore write the answers accordingly.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mathematics-3 -->
+        <div class="subject-content" id="math3">
+            <div class="subject-header">
+                <div class="subject-title">Mathematics-3 (Applied Numerical Methods)</div>
+                <!-- <div class="subject-code">Applied Numerical Methods</div> -->
+            </div>
+            <div class="content-grid">
+                <div class="content-section">
+                    <div class="section-title">Study Approach</div>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Class Focus
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Focus on what's being taught in the class</li>
+                                    <li>This subject this time is super easy since there are direct questions in the exams to just put values in formula to get the answer</li>
+                                    <li>There is a lot of effort to revise the formulas but once that is done, you'll surely get good marks.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            Calculator Proficiency
+                            <span class="collapsible-arrow">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <div class="collapsible-inner">
+                                <ul class="points-list">
+                                    <li>Develop a habit to do the entire calculations using the calculator</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-title">Scoring Information</div>
+                    
+                    <div class="note-box note-success">
+                        <div class="note-title">High Scoring Subject</div>
+                        The average marks in this subject is VERY VERY high. Even a score of 92/100 gives you an A in the results. Last year the last marks to get A+ was 95/100. Therefore avoid mistakes in calculations.
+                    </div>
+
+                    <div class="note-box note-warning">
+                        <div class="note-title">Calculator Skills</div>
+                        If you have no grasp on the calculator keyboard, you are going to miss questions in the exam paper.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        const tabs = document.querySelectorAll('.subject-tab');
+        const contents = document.querySelectorAll('.subject-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and contents
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+
+                // Add active class to clicked tab
+                tab.classList.add('active');
+
+                // Show corresponding content
+                const subjectId = tab.getAttribute('data-subject');
+                document.getElementById(subjectId).classList.add('active');
+            });
+        });
+
+        // Collapsible functionality
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('collapsible-header') || e.target.parentElement.classList.contains('collapsible-header')) {
+                const header = e.target.classList.contains('collapsible-header') ? e.target : e.target.parentElement;
+                const content = header.nextElementSibling;
+                
+                header.classList.toggle('active');
+                content.classList.toggle('active');
+            }
+        });
+
+        // Smooth scrolling for better UX
+        document.documentElement.style.scrollBehavior = 'smooth';
+    </script>
+</body>
+</html>
