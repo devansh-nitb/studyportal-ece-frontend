@@ -80,11 +80,11 @@ const Sidebar = ({ isOpen, toggleSidebar, handleShowStudyMaterials, handleShowAn
               <FaBullhorn className="nav-icon" /> Announcements
             </Link>
           </li>
-          <li>
+          /*<li>
             <Link to="/dashboard" onClick={onFeedbackClick}>
               <FaCommentDots className="nav-icon" /> Feedback
             </Link>
-          </li>
+          </li>*/
           <li> 
             <Link to="/syllabus-view" onClick={onSyllabusViewClick}>
               <FaGraduationCap className="nav-icon" /> Syllabus
@@ -111,3 +111,4 @@ const Sidebar = ({ isOpen, toggleSidebar, handleShowStudyMaterials, handleShowAn
 };
 
 export default Sidebar;
+
