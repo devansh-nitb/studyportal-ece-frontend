@@ -53,7 +53,7 @@ const Sidebar = ({ isOpen, toggleSidebar, handleShowStudyMaterials, handleShowAn
   return (
     <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
-        <h3>ECE Study Portal</h3>
+        <h3>SPARK ECE</h3>
         <button className="close-btn" onClick={toggleSidebar}>&times;</button>
       </div>
       <nav className="sidebar-nav">
@@ -107,5 +107,6 @@ const Sidebar = ({ isOpen, toggleSidebar, handleShowStudyMaterials, handleShowAn
 };
 
 export default Sidebar;
+
 
 
