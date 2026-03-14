@@ -164,7 +164,7 @@ const DashboardPage = () => {
       handleShowStudyMaterials={handleShowStudyMaterials}
       handleShowAnnouncements={handleShowAnnouncements}
       handleShowFeedback={handleShowFeedback}
-      // Removed handleShowSyllabusHtml and handleShowGuidelinesHtml from props
+    // Removed handleShowSyllabusHtml and handleShowGuidelinesHtml from props
     >
       <div className="dashboard-page">
         {currentView === 'announcements' && <Announcements />}
@@ -211,6 +211,8 @@ const DashboardPage = () => {
                     onSelectFile={handleSelectFile}
                     selectedCategory={selectedCategory}
                     selectedSubject={selectedSubject}
+                    apiUrl={API_URL}
+                    token={token}
                   />
                 )}
               </>

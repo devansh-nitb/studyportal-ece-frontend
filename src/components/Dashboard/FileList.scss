@@ -101,6 +101,8 @@
         align-items: center;
         gap: $spacing-xxs;
         text-decoration: none;
+        border: none;
+        cursor: pointer;
 
         &:hover {
           background-color: var(--accent-button-hover-background);

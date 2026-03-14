@@ -7,7 +7,7 @@ import { AuthContext } from '../context/AuthContext';
 import './MaterialDetailPage.scss';
 
 const MaterialDetailPage = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const navigate = useNavigate();
   const { API_URL, token } = useContext(AuthContext);
   const [material, setMaterial] = useState(null);
@@ -44,13 +44,13 @@ const MaterialDetailPage = () => {
     if (material) {
       navigate('/dashboard', {
         state: {
-          previousView: 'materials', 
-          subject: material.subject, 
+          previousView: 'materials',
+          subject: material.subject,
           category: material.category,
         }
       });
     } else {
-      navigate('/dashboard'); 
+      navigate('/dashboard');
     }
   };
 
@@ -68,7 +68,7 @@ const MaterialDetailPage = () => {
 
   return (
     <div className="material-detail-page">
-      <FileViewer file={material} onClose={handleCloseViewer} />
+      <FileViewer file={material} onClose={handleCloseViewer} apiUrl={API_URL} token={token} />
     </div>
   );
 };

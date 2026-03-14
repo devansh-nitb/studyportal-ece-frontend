@@ -1,8 +1,8 @@
 import React from 'react';
-import { FaFilePdf, FaImage, FaLink, FaDownload } from 'react-icons/fa'; 
-import './FileList.scss'; 
+import { FaFilePdf, FaImage, FaLink, FaDownload } from 'react-icons/fa';
+import './FileList.scss';
 
-const FileList = ({ files, onSelectFile, selectedCategory, selectedSubject }) => { 
+const FileList = ({ files, onSelectFile, selectedCategory, selectedSubject, apiUrl, token }) => {
   const getFileIcon = (fileType) => {
     switch (fileType) {
       case 'PDF':
@@ -16,17 +16,41 @@ const FileList = ({ files, onSelectFile, selectedCategory, selectedSubject }) =>
     }
   };
 
-  const getDownloadUrl = (file) => {
+  /**
+   * Handle download via the watermark proxy.
+   * Fetches the watermarked file with auth headers and triggers a browser download.
+   */
+  const handleDownload = async (file) => {
     if (file.fileType === 'URL') {
-      return file.externalUrl; 
+      // External URLs open in a new tab directly
+      window.open(file.externalUrl, '_blank', 'noopener,noreferrer');
+      return;
     }
-    if (file.fileUrl && file.fileUrl.includes('res.cloudinary.com')) {
-      const parts = file.fileUrl.split('/upload/');
-      if (parts.length === 2) {
-        return `${parts[0]}/upload/fl_attachment/${parts[1]}`;
-      }
+
+    try {
+      const proxyUrl = `${apiUrl}/materials/${file._id}/view`;
+      const response = await fetch(proxyUrl, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!response.ok) throw new Error('Download failed');
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+
+      // Set filename based on file type
+      const ext = file.fileType === 'PDF' ? '.pdf' : '.png';
+      link.download = `${file.title}${ext}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download error:', err);
+      alert('Failed to download file. Please try again.');
     }
-    return file.fileUrl; 
   };
 
   return (
@@ -48,15 +72,12 @@ const FileList = ({ files, onSelectFile, selectedCategory, selectedSubject }) =>
                 </div>
               </div>
               {file.isDownloadEnabled && (
-                <a
-                  href={getDownloadUrl(file)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download={file.fileType !== 'URL' ? file.title : null}
+                <button
+                  onClick={() => handleDownload(file)}
                   className="download-button"
                 >
                   <FaDownload /> Download
-                </a>
+                </button>
               )}
             </li>
           ))}
