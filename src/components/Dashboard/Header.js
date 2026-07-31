@@ -1,15 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { FaBars, FaUserCircle } from 'react-icons/fa'; 
-import './Header.scss'; 
-
+import { FaBars, FaUserCircle } from 'react-icons/fa';
+import NotificationBell from './NotificationBell';
+import './Header.scss';
 const Header = ({ toggleSidebar }) => {
   const { user } = useContext(AuthContext);
   const [showProfileDetails, setShowProfileDetails] = useState(false);
-
-  const handleProfileClick = () => {
-    setShowProfileDetails(!showProfileDetails);
-  };
 
   return (
     <header className="dashboard-header">
@@ -27,7 +23,8 @@ const Header = ({ toggleSidebar }) => {
         )}
       </div>
       <div className="user-profile-section">
-        <button className="profile-icon-btn" onClick={handleProfileClick} aria-label="User Profile">
+        <NotificationBell />
+        <button className="profile-icon-btn" onClick={() => setShowProfileDetails(s => !s)} aria-label="User Profile">
           <FaUserCircle className="profile-icon" />
         </button>
         {showProfileDetails && user && (
@@ -37,8 +34,12 @@ const Header = ({ toggleSidebar }) => {
             <p><strong>Section:</strong> {user.section}</p>
             <p><strong>Email:</strong> {user.email}</p>
             {user.isAdmin && <p><strong>Role:</strong> Admin</p>}
+            {user.isPremium && <p><strong>Plan:</strong> ⭐ Premium</p>}
           </div>
         )}
+
+{user.isAdmin && <p><strong>Role:</strong> Admin</p>}
+            {!user.isAdmin && user.isModerator && <p><strong>Role:</strong> Moderator</p>}
       </div>
     </header>
   );

@@ -9,7 +9,6 @@ const Register = () => {
         <h2>Registration Closed</h2>
         <p>The portal registration for the current semester has ended.</p>
         <p>Please check back later for updates on future registration periods.</p>
-        <p> Contact : nitbfreshers@gmail.com </p>
         <Link to="/" className="btn btn-primary">Go to Homepage</Link>
         <p className="auth-link">
           Already have an account? <Link to="/login">Login</Link>

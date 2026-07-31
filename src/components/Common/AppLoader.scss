@@ -1,0 +1,173 @@
+.app-boot-loader {
+  position: fixed;
+  inset: 0;
+  background: #0d1117;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-family: 'Courier New', 'Lucida Console', monospace;
+}
+
+.abl-card {
+  width: 100%;
+  max-width: 540px;
+  padding: 32px 28px;
+}
+
+// ── Logo ──────────────────────────────────────────────────────────
+.abl-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.abl-logo-icon {
+  width: 34px;
+  height: 34px;
+  border: 2px solid #1D9E75;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1D9E75;
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+}
+
+.abl-logo-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #e6edf3;
+  letter-spacing: 0.8px;
+}
+
+.abl-logo-sub {
+  font-size: 11px;
+  color: #8b949e;
+  margin-top: 2px;
+  letter-spacing: 0.2px;
+}
+
+// ── Log output ────────────────────────────────────────────────────
+.abl-log {
+  min-height: 144px;
+  max-height: 144px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.abl-log-line {
+  display: flex;
+  gap: 8px;
+  font-size: 11.5px;
+  line-height: 1.9;
+  animation: abl-fadein 0.2s ease both;
+}
+
+@keyframes abl-fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+.abl-ts {
+  color: #484f58;
+  flex-shrink: 0;
+}
+
+.abl-tag {
+  flex-shrink: 0;
+  font-weight: 700;
+
+  &.tag-ok   { color: #1D9E75; }
+  &.tag-info { color: #58a6ff; }
+  &.tag-warn { color: #d29922; }
+  &.tag-run  { color: #8b949e; }
+}
+
+.abl-msg {
+  color: #c9d1d9;
+}
+
+.abl-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 13px;
+  background: #1D9E75;
+  margin-left: 3px;
+  vertical-align: text-bottom;
+  animation: abl-blink 1s step-end infinite;
+}
+
+@keyframes abl-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+// ── Progress bar ──────────────────────────────────────────────────
+.abl-bar-wrap {
+  margin-bottom: 16px;
+}
+
+.abl-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+
+.abl-bar-label,
+.abl-bar-pct {
+  font-size: 11px;
+  color: #8b949e;
+  letter-spacing: 0.2px;
+}
+
+.abl-bar-track {
+  height: 3px;
+  background: #21262d;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.abl-bar-fill {
+  height: 100%;
+  background: #1D9E75;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+// ── Status row ────────────────────────────────────────────────────
+.abl-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.abl-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #1D9E75;
+  flex-shrink: 0;
+  animation: abl-pulse 1.2s ease infinite;
+
+  &.done {
+    animation: none;
+  }
+}
+
+@keyframes abl-pulse {
+  0%, 100% { opacity: 1;   }
+  50%       { opacity: 0.3; }
+}
+
+.abl-status-text {
+  font-size: 11px;
+  color: #8b949e;
+}

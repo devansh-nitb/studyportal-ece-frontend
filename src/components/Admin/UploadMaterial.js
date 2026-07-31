@@ -15,6 +15,7 @@ const UploadMaterial = () => {
     category: '',
     semester: '',
     isDownloadEnabled: false,
+    isPremium: false,
   });
   const [subjects, setSubjects] = useState([]);
   const [message, setMessage] = useState('');
@@ -69,6 +70,7 @@ const UploadMaterial = () => {
     data.append('category', formData.category);
     data.append('semester', formData.semester);
     data.append('isDownloadEnabled', formData.isDownloadEnabled);
+    data.append('isPremium', formData.isPremium);
 
     if (formData.fileType === 'URL') {
       data.append('externalUrl', formData.externalUrl);
@@ -101,6 +103,7 @@ const UploadMaterial = () => {
           category: '',
           semester: '',
           isDownloadEnabled: false,
+          isPremium: false,
         });
         const fileInput = document.getElementById('file');
         if (fileInput) fileInput.value = '';
@@ -220,7 +223,7 @@ const UploadMaterial = () => {
             <option value="Notes">Notes</option>
             <option value="Books">Books</option>
             <option value="PYQs">PYQs</option>
-            <option value="Syllabus">Syllabus</option>
+            <option value="Assignments">Assignments</option>
           </select>
         </div>
 
@@ -249,6 +252,18 @@ const UploadMaterial = () => {
             aria-label="Enable Download"
           />
           <label htmlFor="isDownloadEnabled" >Enable Download</label>
+        </div>
+
+        <div className="form-group checkbox-group">
+          <input
+            type="checkbox"
+            id="isPremium"
+            name="isPremium"
+            checked={formData.isPremium}
+            onChange={onChange}
+            aria-label="Premium Only"
+          />
+          <label htmlFor="isPremium">⭐ Premium Only</label>
         </div>
 
         <button type="submit" disabled={loading} className='upload-material-btn'>

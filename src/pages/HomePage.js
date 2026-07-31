@@ -15,8 +15,8 @@ const HomePage = () => {
         {theme === 'light' ? <FaMoon /> : <FaSun />}
       </div>
       <div className="homepage-content">
-        <h1>Welcome to ECE Study Portal</h1>
-        <p className="subtitle">Your dedicated resource for ECE 2nd Year studies at NIT Bhopal.</p>
+        <h1>Welcome to CSE Study Portal</h1>
+        <p className="subtitle">Your dedicated resource for CSE 2nd Year studies at NIT Bhopal.</p>
         <p className="description">
           Access notes, books, previous year questions (PYQs), and syllabi for your current semester subjects.
           Stay organized and excel in your academics!

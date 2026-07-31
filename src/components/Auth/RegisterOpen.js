@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
-import './AuthForm.scss'; 
+import './AuthForm.scss';
 
-const Login = () => {
+const Register = () => {
   const [formData, setFormData] = useState({
+    name: '',
+    scholarNumber: '',
     email: '',
-    password: ''
+    password: '',
+    section: ''
   });
   const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState(''); 
+  const [messageType, setMessageType] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
-  const { email, password } = formData;
+  const { name, scholarNumber, email, password, section } = formData;
 
   const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -25,20 +28,20 @@ const Login = () => {
     setMessageType('');
 
     try {
-      const res = await login(email, password);
+      const res = await register({ name, scholarNumber, email, password, section });
       if (res.success) {
-        setMessage(res.message);
+        setMessage(res.message + ' Redirecting to email verification...');
         setMessageType('success');
         setTimeout(() => {
-          navigate('/dashboard'); 
-        }, 1500);
+          navigate('/verify-email', { state: { email: email } });
+        }, 3000);
       } else {
         setMessage(res.message);
         setMessageType('error');
       }
     } catch (err) {
       console.error(err);
-      setMessage('Login failed. Please try again.');
+      setMessage('Registration failed. Please try again.');
       setMessageType('error');
     } finally {
       setLoading(false);
@@ -48,9 +51,33 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2>Login</h2>
+        <h2>Register</h2>
         {message && <div className={`message-box ${messageType}`}>{message}</div>}
         <form onSubmit={onSubmit}>
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={name}
+              onChange={onChange}
+              required
+              aria-label="Name"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="scholarNumber">Scholar Number</label>
+            <input
+              type="text"
+              id="scholarNumber"
+              name="scholarNumber"
+              value={scholarNumber}
+              onChange={onChange}
+              required
+              aria-label="Scholar Number"
+            />
+          </div>
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -72,23 +99,34 @@ const Login = () => {
               value={password}
               onChange={onChange}
               required
+              minLength="6"
               aria-label="Password"
             />
           </div>
+          <div className="form-group">
+            <label htmlFor="section">Section (Enter among CSE-1, CSE-2 or CSE-3)</label>
+            <input
+              type="text"
+              id="section"
+              name="section"
+              value={section}
+              onChange={onChange}
+              required
+              aria-label="Section"
+            />
+          </div>
           <button type="submit" disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
         <p className="auth-link">
-          <Link to="/forgot-password">Forgot Password?</Link>
+          Already have an account? <Link to="/login">Login</Link>
         </p>
-        <p className="auth-link">
-          Don't have an account? <Link to="/register">Register</Link>
-        </p>
-            <p> Contact : nitbfreshers@gmail.com </p>
+        <p> Contact : nitbfreshers@gmail.com </p>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Register;
+

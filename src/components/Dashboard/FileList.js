@@ -1,8 +1,11 @@
-import React from 'react';
-import { FaFilePdf, FaImage, FaLink, FaDownload } from 'react-icons/fa';
+import React, { useContext } from 'react';
+import { FaFilePdf, FaImage, FaLink, FaDownload, FaCrown } from 'react-icons/fa';
+import { AuthContext } from '../../context/AuthContext';
 import './FileList.scss';
 
 const FileList = ({ files, onSelectFile, selectedCategory, selectedSubject, apiUrl, token }) => {
+  // Removed unused user and premiumEnabled from AuthContext
+
   const getFileIcon = (fileType) => {
     switch (fileType) {
       case 'PDF':
@@ -61,11 +64,18 @@ const FileList = ({ files, onSelectFile, selectedCategory, selectedSubject, apiU
       ) : (
         <ul className="file-items-list">
           {files.map((file) => (
-            <li key={file._id} className="file-item">
+            <li key={file._id} className={`file-item${file.isPremium ? ' file-item--premium' : ''}`}>
               <div className="file-info" onClick={() => onSelectFile(file)}>
                 {getFileIcon(file.fileType)}
                 <div className="file-details">
-                  <span className="file-title">{file.title}</span>
+                  <span className="file-title">
+                    {file.title}
+                    {file.isPremium && (
+                      <span className="premium-badge" title="Premium material">
+                        <FaCrown /> Premium
+                      </span>
+                    )}
+                  </span>
                   <span className="file-description">
                     {selectedSubject?.code} - {file.category} ({file.fileType})
                   </span>

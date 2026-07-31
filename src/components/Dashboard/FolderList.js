@@ -3,7 +3,7 @@ import { FaFolderOpen } from 'react-icons/fa';
 import './FolderList.scss'; 
 
 const FolderList = ({ onSelectFolder }) => {
-  const categories = ['Notes', 'Books', 'PYQs', 'Syllabus']; 
+  const categories = ['Notes', 'Books', 'PYQs', 'Assignments']; 
 
   return (
     <div className="folder-list-container">

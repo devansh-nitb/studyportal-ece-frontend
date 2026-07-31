@@ -40,6 +40,7 @@ const UserManagement = () => {
     if (token) {
       fetchUsers();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const handleEditClick = (user) => {
@@ -108,6 +109,25 @@ const UserManagement = () => {
       } finally {
         setLoading(false);
       }
+    }
+  };
+
+  const handleTogglePremium = async (userItem) => {
+    const newStatus = !userItem.isPremium;
+    try {
+      const res = await axios.put(
+        `${API_URL}/admin/users/${userItem._id}/premium`,
+        { isPremium: newStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.data.success) {
+        setMessage(`Premium ${newStatus ? 'granted to' : 'revoked from'} ${userItem.name}.`);
+        setMessageType('success');
+        fetchUsers();
+      }
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Failed to update premium status.');
+      setMessageType('error');
     }
   };
 
@@ -185,6 +205,18 @@ const UserManagement = () => {
                 />
                 <label htmlFor="editIsAdmin">Admin</label>
               </div>
+              <div className="form-group checkbox-group">
+                <input
+                  type="checkbox"
+                  id="editIsModerator"
+                  name="isModerator"
+                  checked={!!editUser.isModerator}
+                  onChange={handleEditChange}
+                />
+                <label htmlFor="editIsModerator">
+                  Moderator (materials, contributions, announcements, access logs, timetable, notifications)
+                </label>
+              </div>
               <div className="form-actions">
                 <button type="submit" disabled={loading}>
                   {loading ? 'Updating...' : 'Save Changes'}
@@ -212,7 +244,8 @@ const UserManagement = () => {
                 <th>Email</th>
                 <th>Section</th>
                 <th>Verified</th>
-                <th>Admin</th>
+                <th>Role</th>
+                <th>Premium</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -224,7 +257,16 @@ const UserManagement = () => {
                   <td>{userItem.email}</td>
                   <td>{userItem.section}</td>
                   <td>{userItem.isVerified ? 'Yes' : 'No'}</td>
-                  <td>{userItem.isAdmin ? 'Yes' : 'No'}</td>
+                  <td>{userItem.isAdmin ? 'Admin' : userItem.isModerator ? 'Moderator' : 'User'}</td>
+                  <td>
+                    <button
+                      onClick={() => handleTogglePremium(userItem)}
+                      className={userItem.isPremium ? 'btn-premium-active' : 'btn-premium-inactive'}
+                      title={userItem.isPremium ? 'Revoke Premium' : 'Grant Premium'}
+                    >
+                      {userItem.isPremium ? '★ Premium' : '☆ Free'}
+                    </button>
+                  </td>
                   <td>
                     <button onClick={() => handleEditClick(userItem)} className="btn-edit">Edit</button>
                     <button onClick={() => handleDeleteUser(userItem._id)} className="btn-delete">Delete</button>
