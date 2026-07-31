@@ -6,7 +6,8 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token')); // Get token from localStorage
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
+  const [premiumEnabled, setPremiumEnabled] = useState(false);
 
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -14,13 +15,31 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
     setToken(jwtToken);
     localStorage.setItem('token', jwtToken);
+    // Kept so an offline reload can restore "who is logged in" without a
+    // network call — see checkAuthStatus below.
+    localStorage.setItem('cachedUser', JSON.stringify(userData));
+  }, []);
+
+  // SECURITY: Cache Storage (used by public/sw.js for offline materials) is
+  // shared by origin, not by logged-in user. If two different people use
+  // the same browser one after another (a shared lab/library computer),
+  // a stale cache could otherwise leak the first person's materials list
+  // or even their personally watermarked PDFs to the second. Flushing the
+  // service worker's user-data caches on every logout/session-expiry
+  // closes that gap.
+  const clearOfflineCaches = useCallback(() => {
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_USER_DATA_CACHE' });
+    }
   }, []);
 
   const clearAuthData = useCallback(() => {
     setUser(null);
     setToken(null);
     localStorage.removeItem('token');
-  }, []);
+    localStorage.removeItem('cachedUser');
+    clearOfflineCaches();
+  }, [clearOfflineCaches]);
 
   const checkAuthStatus = useCallback(async () => {
     setLoading(true);
@@ -34,13 +53,48 @@ export const AuthProvider = ({ children }) => {
         });
         if (res.data.success) {
           setUser(res.data.data); 
-          setToken(storedToken); 
+          setToken(storedToken);
+          localStorage.setItem('cachedUser', JSON.stringify(res.data.data));
+          // Fetch premium status
+          try {
+            const premRes = await axios.get(`${API_URL}/settings/premium-enabled`, {
+              headers: { Authorization: `Bearer ${storedToken}` },
+            });
+            if (premRes.data.success) {
+              setPremiumEnabled(premRes.data.data.premiumEnabled);
+            }
+          } catch (_) {}
         } else {
+          // The server explicitly responded but said the session isn't
+          // valid — this is a real logout, not a connectivity problem.
           clearAuthData(); 
         }
       } catch (error) {
         console.error('Auth check failed:', error);
-        clearAuthData(); 
+        // FIX: A request can fail for two very different reasons — (a) the
+        // server actively rejected the token (expired/invalid session:
+        // error.response will be a 401/403), which really should log the
+        // user out, or (b) there was no network at all to even reach the
+        // server (error.response is undefined), which should NOT log the
+        // user out — otherwise reloading the app while offline (the whole
+        // point of the offline-materials feature) would wipe the session
+        // and the offline cache along with it on every reload.
+        if (error.response) {
+          clearAuthData();
+        } else {
+          const cachedUserRaw = localStorage.getItem('cachedUser');
+          if (cachedUserRaw) {
+            try {
+              setUser(JSON.parse(cachedUserRaw));
+              setToken(storedToken);
+            } catch {
+              // Corrupt cached value — fall back to a real logout.
+              clearAuthData();
+            }
+          }
+          // No cached user to fall back on: leave user/token as-is rather
+          // than forcing a logout purely because of a connectivity blip.
+        }
       }
     }
     setLoading(false);
@@ -117,6 +171,7 @@ export const AuthProvider = ({ children }) => {
     user,
     token,
     loading,
+    premiumEnabled,
     login,
     register,
     verifyEmail,

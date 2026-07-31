@@ -93,3 +93,25 @@
     }
   }
 }
+
+// Home view layout: subjects + sidebar widgets
+.home-view {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+
+  .semester-section { flex: 1; min-width: 0; }
+
+  .home-widgets {
+    width: 280px;
+    flex-shrink: 0;
+
+    @media (max-width: 900px) {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+  }
+}
