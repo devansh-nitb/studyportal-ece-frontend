@@ -1,0 +1,402 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.file-viewer-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--background-color);
+  z-index: 1001;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.viewer-header {
+  background-color: var(--card-background);
+  color: var(--text-color);
+  padding: $spacing-sm $spacing-xl;
+  box-shadow: $shadow-sm;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-md;
+  z-index: 1010;
+  flex-shrink: 0;
+
+  h3 {
+    margin: 0;
+    font-size: $font-size-lg;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0; // Allow text to shrink
+  }
+
+  .header-toolbar {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    flex-shrink: 0;
+
+    .toolbar-button {
+      @include secondary-button;
+      font-size: $font-size-sm;
+      padding: $spacing-xs $spacing-sm;
+      display: flex;
+      align-items: center;
+      gap: $spacing-xxs;
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    .toolbar-separator {
+      height: 20px;
+      border-left: 1px solid var(--border-color);
+    }
+
+    .page-input {
+      width: 42px;
+      padding: $spacing-xxs $spacing-xs;
+      text-align: center;
+      border: 1px solid var(--input-border);
+      border-radius: $border-radius-sm;
+      font-size: $font-size-sm;
+      background-color: var(--input-background);
+      color: var(--text-color);
+    }
+
+    .page-count {
+      font-size: $font-size-sm;
+      color: var(--secondary-color);
+      white-space: nowrap;
+    }
+
+    .zoom-level {
+      font-size: $font-size-sm;
+      color: var(--secondary-color);
+      min-width: 40px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  .close-viewer-btn {
+    @include secondary-button;
+    font-size: $font-size-sm;
+    padding: $spacing-xs $spacing-sm;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    flex-shrink: 0;
+    background-color: var(--delete-button-background);
+
+    &:hover {
+      background-color: var(--delete-button-hover-background);
+      color: var(--button-text);
+    }
+  }
+}
+
+.viewer-content {
+  flex-grow: 1;
+  overflow: hidden;
+  display: flex;
+  padding: $spacing-md;
+}
+
+.pdf-viewer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.pdf-document-wrapper {
+  flex-grow: 1;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  @include custom-scrollbar;
+  border-radius: $border-radius-md;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-background);
+
+  &.scroll-view {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  &.single-page-view {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .react-pdf__Document {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: $spacing-md;
+
+    .react-pdf__Page {
+      margin-bottom: $spacing-md;
+      box-shadow: $shadow-sm;
+      border: 1px solid var(--border-color);
+      border-radius: $border-radius-sm;
+      background-color: var(--card-background);
+
+      canvas {
+        width: 100% !important;
+        height: auto !important;
+      }
+    }
+  }
+}
+
+.image-viewer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .viewed-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    box-shadow: $shadow-md;
+  }
+}
+
+.url-viewer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  // ── Top bar (always visible, shows domain + open-in-tab) ─────────
+  .url-topbar {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-xs $spacing-md;
+    background: var(--card-background);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+
+    .url-topbar-domain {
+      flex: 1;
+      font-size: $font-size-sm;
+      color: var(--secondary-color);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .url-topbar-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: $font-size-sm;
+      color: var(--primary-color);
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 4px 10px;
+      border-radius: $border-radius-sm;
+      border: 1px solid var(--primary-color);
+      transition: background 0.15s ease;
+      flex-shrink: 0;
+
+      &:hover {
+        background: var(--primary-color);
+        color: var(--button-text);
+      }
+    }
+  }
+
+  // ── The iframe itself ─────────────────────────────────────────────
+  .external-iframe {
+    flex-grow: 1;
+    width: 100%;
+    border: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    &.iframe-loaded {
+      opacity: 1;
+    }
+  }
+
+  // ── Blocked / fallback card ───────────────────────────────────────
+  .url-blocked-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-md;
+    padding: $spacing-xl;
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto;
+
+    .url-blocked-icon {
+      font-size: 2.5rem;
+      color: var(--warning-text-color);
+      background: var(--warning-color);
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h3 {
+      font-size: $font-size-xl;
+      color: var(--text-color);
+      margin: 0;
+    }
+
+    p {
+      color: var(--secondary-color);
+      font-size: $font-size-sm;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    // Spinner shown while backend checks embeddability
+    .url-checking-spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border-color);
+      border-top-color: var(--primary-color);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    .url-hint {
+      font-size: $font-size-xs;
+      color: var(--secondary-color);
+      opacity: 0.7;
+      margin-top: $spacing-sm;
+    }
+
+    // The link preview card
+    .url-link-card {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+      padding: $spacing-md $spacing-lg;
+      border: 1px solid var(--border-color);
+      border-radius: $border-radius-lg;
+      background: var(--card-background);
+      width: 100%;
+      box-shadow: $shadow-sm;
+      flex-wrap: wrap;
+
+      .url-favicon {
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+
+      .url-link-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        text-align: left;
+        min-width: 0;
+
+        .url-link-title {
+          font-size: $font-size-sm;
+          font-weight: 600;
+          color: var(--text-color);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .url-link-domain {
+          font-size: $font-size-xs;
+          color: var(--secondary-color);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .url-open-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: $spacing-xs $spacing-md;
+        border-radius: $border-radius-sm;
+        background: var(--primary-color);
+        color: var(--button-text);
+        font-size: $font-size-sm;
+        font-weight: 500;
+        text-decoration: none;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: background 0.15s ease;
+
+        &:hover {
+          background: var(--hover-background);
+        }
+      }
+    }
+  }
+}
+
+.error-message,
+.no-pdf-data {
+  padding: $spacing-lg;
+  text-align: center;
+  color: var(--error-text);
+  background-color: var(--error-color);
+  border-radius: $border-radius-sm;
+  margin: $spacing-lg auto;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: $shadow-sm;
+}
+// ── Keyframe animations ───────────────────────────────────────────
+@keyframes mdp-fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Small inline pill shown next to the file title when the service worker
+// served this material from its offline cache (no live network round-trip).
+.offline-copy-badge {
+  display: inline-block;
+  margin-left: 0.6rem;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 999px;
+  background-color: var(--warning-color);
+  color: var(--warning-text-color);
+  vertical-align: middle;
+}

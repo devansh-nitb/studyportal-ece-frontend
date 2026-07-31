@@ -1,0 +1,50 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.subject-card {
+  @include card-style; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: $spacing-md;
+  cursor: pointer;
+  height: 100%;
+  transition: transform $transition-speed-fast $transition-ease, box-shadow $transition-speed-fast $transition-ease;
+
+  &:hover {
+    transform: translateY(-3px); 
+    box-shadow: $shadow-lg; 
+  }
+
+  .subject-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: $border-radius-md; 
+    margin-bottom: $spacing-sm;
+    background-color: var(--input-background); 
+    padding: $spacing-xs;
+    border: 1px solid var(--border-color);
+  }
+
+  .subject-name {
+    font-size: $font-size-lg;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: $spacing-xxs;
+  }
+
+  .subject-code {
+    font-size: $font-size-sm;
+    color: var(--secondary-color);
+    margin-bottom: $spacing-xs;
+  }
+
+  .subject-semester {
+    font-size: $font-size-sm;
+    color: var(--text-color);
+    font-weight: 500;
+  }
+}

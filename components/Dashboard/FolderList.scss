@@ -1,0 +1,50 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.folder-list-container {
+  @include card-style;
+  margin-top: $spacing-lg;
+  padding: $spacing-xl;
+  text-align: center;
+
+  h3 {
+    color: var(--primary-color);
+    margin-bottom: $spacing-lg;
+    font-size: $font-size-xl;
+  }
+
+  .folders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+    gap: $spacing-lg;
+    justify-content: center;
+
+    .folder-card {
+      @include card-style; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: $spacing-md;
+      cursor: pointer;
+      transition: transform $transition-speed-fast $transition-ease, box-shadow $transition-speed-fast $transition-ease;
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: $shadow-lg;
+      }
+
+      .folder-icon {
+        font-size: $font-size-xxl; 
+        color: var(--accent-color);
+        margin-bottom: $spacing-sm;
+      }
+
+      .folder-name {
+        font-size: $font-size-lg;
+        font-weight: 600;
+        color: var(--text-color);
+      }
+    }
+  }
+}
