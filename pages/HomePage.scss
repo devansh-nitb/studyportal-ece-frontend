@@ -1,0 +1,99 @@
+@import '../styles/variables';
+@import '../styles/mixins';
+
+.homepage-container {
+  @include flex-center;
+  flex-direction: column;
+  min-height: 100vh;
+  text-align: center;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  padding: $spacing-xl;
+  position: relative;
+
+  .theme-toggle-button {
+    position: absolute;
+    top: $spacing-lg;
+    right: $spacing-lg;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: $border-radius-full;
+    width: 40px;
+    height: 40px;
+    @include flex-center;
+    font-size: $font-size-xl;
+    color: var(--primary-color);
+    cursor: pointer;
+    box-shadow: $shadow-xs;
+    transition: background-color $transition-speed-fast $transition-ease, color $transition-speed-fast $transition-ease, box-shadow $transition-speed-fast $transition-ease;
+
+    &:hover {
+      background-color: var(--hover-background);
+      color: var(--button-text);
+      box-shadow: $shadow-sm;
+    }
+  }
+
+  .homepage-content {
+    @include card-style; 
+    max-width: 700px;
+    width: 90%;
+    padding: $spacing-xxl; 
+
+    h1 {
+      font-size: $font-size-xxxl;
+      color: var(--primary-color);
+      margin-bottom: $spacing-md;
+
+      @include mobile {
+        font-size: $font-size-xxl;
+      }
+    }
+
+    .subtitle {
+      font-size: $font-size-lg;
+      color: var(--secondary-color);
+      margin-bottom: $spacing-lg;
+
+      @include mobile {
+        font-size: $font-size-base;
+      }
+    }
+
+    .description {
+      font-size: $font-size-base;
+      color: var(--text-color);
+      margin-bottom: $spacing-xl;
+    }
+
+    .auth-buttons {
+      @include flex-center;
+      gap: $spacing-lg; 
+      flex-wrap: wrap; 
+
+      .btn {
+        @include button-base; 
+        padding: $spacing-md $spacing-xl; 
+        font-size: $font-size-lg;
+        min-width: 150px; 
+
+        &.btn-primary {
+          @include primary-button; 
+        }
+
+        &.btn-secondary {
+          @include secondary-button;
+          background-color: var(--input-background); 
+          color: var(--primary-color);
+          border: 1px solid var(--border-color);
+
+          &:hover {
+            background-color: var(--hover-background);
+            color: var(--button-text);
+            border-color: var(--hover-background);
+          }
+        }
+      }
+    }
+  }
+}
