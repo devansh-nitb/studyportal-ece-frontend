@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import './AppLoader.scss';
 
 const LOG_STEPS = [
-  { delay: 120,  tag: 'run',  msg: 'Booting Spark CSE Portal v1.0.0',              pct: 8,   label: 'Loading config…'       },
+  { delay: 120,  tag: 'run',  msg: 'Booting Spark ECE Portal v1.0.0',              pct: 8,   label: 'Loading config…'       },
   { delay: 300,  tag: 'info', msg: 'Loading environment config',                    pct: 8,   label: 'Loading config…'       },
   { delay: 350,  tag: 'ok',   msg: 'Environment variables loaded',                  pct: 22,  label: 'Starting React…'       },
   { delay: 320,  tag: 'info', msg: 'Initializing React runtime',                    pct: 38,  label: 'Loading modules…'      },
   { delay: 350,  tag: 'ok',   msg: 'React 18 ready',                               pct: 38,  label: 'Loading modules…'      },
-  { delay: 600,  tag: 'info', msg: 'Connecting to API — sparkcse-backend.onrender.com', pct: 55, label: 'Connecting to API…' },
+  { delay: 600,  tag: 'info', msg: 'Connecting to API — sparkece-backend.onrender.com', pct: 55, label: 'Connecting to API…' },
   { delay: 400,  tag: 'ok',   msg: 'API reachable',                                pct: 72,  label: 'Checking session…'     },
   { delay: 500,  tag: 'info', msg: 'Checking auth session',                         pct: 85,  label: 'Loading dashboard…'   },
   { delay: 600,  tag: 'ok',   msg: 'Session verified',                              pct: 100, label: 'Ready!'                },
@@ -79,8 +79,8 @@ const AppLoader = () => {
         <div className="abl-logo-row">
           <div className="abl-logo-icon">SP</div>
           <div>
-            <div className="abl-logo-name">SPARKCSE PORTAL</div>
-            <div className="abl-logo-sub">NITBFreshers · CSE Study Hub</div>
+            <div className="abl-logo-name">SPARKECE PORTAL</div>
+            <div className="abl-logo-sub">NITBFreshers · ECE Study Hub</div>
           </div>
         </div>
 
