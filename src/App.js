@@ -92,7 +92,7 @@ const AppContent = () => {
           element={
             <ProtectedRoute>
               <HtmlViewer
-                title="ECE 2nd Year Syllabus"
+                title="CSE 2nd Year Syllabus"
                 src={`${process.env.PUBLIC_URL}/syllabus.html`}
                 onBack={handleHtmlViewerBack}
               />
