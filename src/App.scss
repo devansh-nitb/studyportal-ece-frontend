@@ -1,10 +1,5 @@
 @import './styles/variables'; // for transitions
 @import './styles/mixins';
 
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  // transition: background-color $transition-speed-normal $transition-ease, color $transition-speed-normal $transition-ease;
-}
-
+// FIX: Removed duplicate .app-container block — it is already fully defined in global.scss
+// App.scss is kept for any App-specific overrides only
