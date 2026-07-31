@@ -12,7 +12,7 @@ import {
   FaFileAlt, FaFilePdf, FaTimes, FaExternalLinkAlt, FaLink, FaExclamationTriangle, FaDownload, FaLock
 } from 'react-icons/fa';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 // ── FadePage ────────────────────────────────────────────────────────
 // Wraps each react-pdf <Page> so it starts invisible and fades in once
@@ -204,10 +204,8 @@ const UrlViewer = ({ url, title, apiUrl, token }) => {
 
 // ── FileViewer ──────────────────────────────────────────────────────
 const FileViewer = ({ file, onClose, apiUrl, token }) => {
-  const { user } = useContext(AuthContext);
-  // Non-admins may only download non-premium material; premium material is
-  // view-only for them (mirrors the backend rule in downloadStudyMaterial).
-  const canDownload = user && (user.isAdmin || !file?.isPremium);
+  const { user, premiumEnabled } = useContext(AuthContext);
+  const canDownload = user && (user.isAdmin || (premiumEnabled && user.isPremium));
 
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -221,7 +219,7 @@ const FileViewer = ({ file, onClose, apiUrl, token }) => {
   // offline cache (no live network round-trip) rather than a fresh fetch.
   const [servedFromOfflineCache, setServedFromOfflineCache] = useState(false);
   // Tracks which page numbers have finished rendering (for single-page mode)
-  // const [renderedPages, setRenderedPages] = useState({});
+  const [renderedPages, setRenderedPages] = useState({});
 
   const viewerRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -260,12 +258,13 @@ const FileViewer = ({ file, onClose, apiUrl, token }) => {
     setGoToPageInput('');
     setWatermarkedImageUrl(null);
     setImageLoading(false);
+    setRenderedPages({});
     setServedFromOfflineCache(false);
   }, [file]);
 
   // Reset rendered state when page changes in single-page mode
   useEffect(() => {
-    // No-op since renderedPages was removed
+    setRenderedPages({});
   }, [pageNumber, scale]);
 
   useEffect(() => {
@@ -416,9 +415,9 @@ const FileViewer = ({ file, onClose, apiUrl, token }) => {
               <FaDownload /> {isDownloading ? 'Downloading…' : 'Download'}
             </button>
           ) : (
-           <span className="toolbar-button download-btn download-locked" title="Premium material is view-only and cannot be downloaded">
-  <FaLock /> View Only
-</span>
+            <span className="toolbar-button download-btn download-locked" title="Premium feature">
+              <FaLock /> Premium
+            </span>
           )
         )}
         <button onClick={onClose} className="close-viewer-btn"><FaTimes /> Close</button>
