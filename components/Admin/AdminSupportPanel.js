@@ -38,7 +38,6 @@ const AdminSupportPanel = () => {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat?.messages]);
 
   const handleReply = async (e) => {

@@ -4,7 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import './FileList.scss';
 
 const FileList = ({ files, onSelectFile, selectedCategory, selectedSubject, apiUrl, token }) => {
-  // Removed unused user and premiumEnabled from AuthContext
+  const { user, premiumEnabled } = useContext(AuthContext);
 
   const getFileIcon = (fileType) => {
     switch (fileType) {

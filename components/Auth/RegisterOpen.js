@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import './AuthForm.scss';
@@ -14,8 +14,28 @@ const Register = () => {
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
   const [loading, setLoading] = useState(false);
+  const [availableSections, setAvailableSections] = useState([]);
   const { register } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchSections = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL || ''}/api/settings/sections`);
+        const result = await response.json();
+        if (result.success && result.data && result.data.sections) {
+          setAvailableSections(result.data.sections);
+          // Set default section if available
+          if (result.data.sections.length > 0) {
+            setFormData(prev => ({ ...prev, section: result.data.sections[0] }));
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching sections:', err);
+      }
+    };
+    fetchSections();
+  }, []);
 
   const { name, scholarNumber, email, password, section } = formData;
 
@@ -104,16 +124,23 @@ const Register = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="section">Section (Enter among CSE-1, CSE-2 or CSE-3)</label>
-            <input
-              type="text"
+            <label htmlFor="section">Section</label>
+            <select
               id="section"
               name="section"
               value={section}
               onChange={onChange}
               required
               aria-label="Section"
-            />
+            >
+              {availableSections.length > 0 ? (
+                availableSections.map((sec, idx) => (
+                  <option key={idx} value={sec}>{sec}</option>
+                ))
+              ) : (
+                <option value="">Loading sections...</option>
+              )}
+            </select>
           </div>
           <button type="submit" disabled={loading}>
             {loading ? 'Registering...' : 'Register'}

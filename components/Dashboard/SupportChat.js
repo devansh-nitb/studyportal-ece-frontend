@@ -35,7 +35,6 @@ const SupportChat = () => {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
   const handleSend = async (e) => {

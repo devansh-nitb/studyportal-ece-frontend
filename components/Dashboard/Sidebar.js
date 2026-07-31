@@ -21,7 +21,7 @@ const Sidebar = ({
   handleShowDoubts,
   handleShowTimetable,
 }) => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, premiumEnabled } = useContext(AuthContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
   const navigate = useNavigate();
 
@@ -37,12 +37,12 @@ const Sidebar = ({
   const onSyllabusViewClick   = () => { toggleSidebar(); navigate('/syllabus-view',   { state: { previousView: 'announcements' } }); };
   const onGuidelinesViewClick = () => { toggleSidebar(); navigate('/guidelines-view', { state: { previousView: 'announcements' } }); };
 
-  const showCalendar = !!user;
+  const showCalendar = user && (user.isAdmin || (premiumEnabled && user.isPremium));
 
   return (
     <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
-        <center><h3>SPARK CSE</h3></center>
+        <center><h3>SPARK ECE</h3></center>
         <button className="close-btn" onClick={toggleSidebar}>&times;</button>
       </div>
       <nav className="sidebar-nav">
@@ -88,6 +88,14 @@ const Sidebar = ({
               <Link to="/dashboard" onClick={() => go(handleShowCalendar)}>
                 <FaCalendarAlt className="nav-icon" />
                 Academic Calendar
+                {!user.isAdmin && (
+                  <span style={{
+                    marginLeft: 6, fontSize: '0.65rem',
+                    background: 'linear-gradient(135deg,#f6c90e,#e0a800)',
+                    color: '#1a1a1a', borderRadius: 8,
+                    padding: '1px 6px', fontWeight: 700, verticalAlign: 'middle'
+                  }}>★</span>
+                )}
               </Link>
             </li>
           )}
@@ -99,16 +107,16 @@ const Sidebar = ({
               </Link>
             </li>
           )}
-          // <li>
-            // <Link to="/syllabus-view" onClick={onSyllabusViewClick}>
-              // <FaGraduationCap className="nav-icon" /> Syllabus
-            // </Link>
-          // </li>
-          // <li>
-          //   <Link to="/guidelines-view" onClick={onGuidelinesViewClick}>
-          //     <FaLightbulb className="nav-icon" /> Academic Guidelines
-          //   </Link>
-          // </li>
+          <li>
+            <Link to="/syllabus-view" onClick={onSyllabusViewClick}>
+              <FaGraduationCap className="nav-icon" /> Syllabus
+            </Link>
+          </li>
+          <li>
+            <Link to="/guidelines-view" onClick={onGuidelinesViewClick}>
+              <FaLightbulb className="nav-icon" /> Academic Guidelines
+            </Link>
+          </li>
         </ul>
       </nav>
       <div className="sidebar-footer">

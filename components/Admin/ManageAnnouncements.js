@@ -42,7 +42,6 @@ const ManageAnnouncements = () => {
     if (token) {
       fetchAnnouncements();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });

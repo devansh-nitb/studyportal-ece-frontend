@@ -27,24 +27,13 @@ const PERIOD_TIMES_SHORT = {
   7: '4:30–5:30',
 };
 
-// FIX: Three CSE sections
-const ALL_SECTIONS = ['CSE-1', 'CSE-2', 'CSE-3'];
+// Section is now available directly on user profile
 
 const TYPE_COLOR = {
   Lecture: '#0a84ff', Lab: '#30d158', Tutorial: '#ff9f0a', Free: '', '': '',
 };
 
 const TYPE_OPTIONS = ['Lecture', 'Lab', 'Tutorial', 'Free', ''];
-
-// FIX: Derive section from last digit of scholar number
-// e.g. scholar "24112011181" → last digit "1" → "CSE-1"
-function sectionFromScholar(scholarNumber) {
-  if (!scholarNumber) return null;
-  const lastDigit = scholarNumber.trim().slice(-1);
-  const num = parseInt(lastDigit, 10);
-  if (num >= 1 && num <= 3) return `CSE-${num}`;
-  return null;
-}
 
 function emptySchedule() {
   return DAYS.map(day => ({
@@ -56,11 +45,11 @@ function emptySchedule() {
 const TimetableView = () => {
   const { user, token, API_URL } = useContext(AuthContext);
 
-  // FIX: Derive user's section from scholar number
-  const userSection = sectionFromScholar(user?.scholarNumber);
+  // FIX: Derive user's section directly from user profile
+  const userSection = user?.section || 'ECE-1';
 
-  // Admin can switch between sections; students are locked to their section
-  const [activeSection, setActiveSection] = useState(userSection || 'CSE-1');
+  const [availableSections, setAvailableSections] = useState([]);
+  const [activeSection, setActiveSection] = useState(userSection);
   const [schedule, setSchedule]   = useState(null);
   const [semester, setSemester]   = useState(null);
   const [loading, setLoading]     = useState(true);
@@ -104,7 +93,18 @@ const TimetableView = () => {
         });
         const currentSemester = semRes.data?.data?.currentSemester || 3;
         setSemester(currentSemester);
-        await fetchTimetable(activeSection, currentSemester);
+        
+        const secRes = await axios.get(`${API_URL}/settings/sections`);
+        let sectionsList = [];
+        if (secRes.data?.success && secRes.data?.data?.sections) {
+          sectionsList = secRes.data.data.sections;
+          setAvailableSections(sectionsList);
+        }
+
+        const fetchSec = activeSection || userSection || (sectionsList.length > 0 ? sectionsList[0] : 'ECE-1');
+        if (!activeSection) setActiveSection(fetchSec);
+
+        await fetchTimetable(fetchSec, currentSemester);
       } catch {
         setError('Could not load timetable.');
         setLoading(false);
@@ -180,7 +180,7 @@ const TimetableView = () => {
         <div className="tt-header__right">
           {/* FIX: Section tabs — admin sees all, student locked to their section */}
           <div className="tt-section-tabs">
-            {(isAdmin ? ALL_SECTIONS : [userSection || 'CSE-1']).map(sec => (
+            {(isAdmin && availableSections.length > 0 ? availableSections : [userSection]).map(sec => (
               <button
                 key={sec}
                 className={`tt-section-tab${activeSection === sec ? ' tt-section-tab--active' : ''}`}

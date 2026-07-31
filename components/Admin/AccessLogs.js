@@ -35,7 +35,6 @@ const AccessLogs = () => {
     if (token) {
       fetchAccessLogs();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   if (loading) {
