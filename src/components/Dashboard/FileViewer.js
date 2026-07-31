@@ -404,22 +404,7 @@ const FileViewer = ({ file, onClose, apiUrl, token }) => {
           </div>
         )}
 
-        {(file.fileType === 'PDF' || file.fileType === 'Image') && (
-          canDownload ? (
-            <button
-              onClick={handleDownload}
-              className="toolbar-button download-btn"
-              title="Download"
-              disabled={isDownloading}
-            >
-              <FaDownload /> {isDownloading ? 'Downloading…' : 'Download'}
-            </button>
-          ) : (
-            <span className="toolbar-button download-btn download-locked" title="Premium feature">
-              <FaLock /> Premium
-            </span>
-          )
-        )}
+        {/* Download button removed as requested */}
         <button onClick={onClose} className="close-viewer-btn"><FaTimes /> Close</button>
       </div>
 
