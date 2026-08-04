@@ -62,30 +62,7 @@ const Header = ({ toggleSidebar }) => {
             <p><strong>Section:</strong> {user.section}</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
               <strong>Semester:</strong>
-              {isEditingSem ? (
-                <>
-                  <input 
-                    type="number" 
-                    min="1" max="8" 
-                    value={newSemester} 
-                    onChange={e => setNewSemester(e.target.value)}
-                    style={{ width: '50px', padding: '2px' }}
-                  />
-                  <button onClick={handleSemesterUpdate} disabled={updateLoading} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'green' }}>
-                    <FaCheck />
-                  </button>
-                  <button onClick={() => setIsEditingSem(false)} disabled={updateLoading} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'red' }}>
-                    <FaTimes />
-                  </button>
-                </>
-              ) : (
-                <>
-                  <span>{user.semester ? `Semester ${user.semester}` : 'Not set'}</span>
-                  <button onClick={() => setIsEditingSem(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary-color)' }}>
-                    <FaEdit />
-                  </button>
-                </>
-              )}
+              <span>{user.semester ? `Semester ${user.semester}` : 'Not set'}</span>
             </div>
             <p><strong>Email:</strong> {user.email}</p>
             {user.isAdmin && <p><strong>Role:</strong> Admin</p>}
