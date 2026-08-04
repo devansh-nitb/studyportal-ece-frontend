@@ -1,11 +1,41 @@
 import React, { useContext, useState } from 'react';
+import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
-import { FaBars, FaUserCircle } from 'react-icons/fa';
+import { FaBars, FaUserCircle, FaEdit, FaCheck, FaTimes } from 'react-icons/fa';
 import NotificationBell from './NotificationBell';
 import './Header.scss';
+
 const Header = ({ toggleSidebar }) => {
-  const { user } = useContext(AuthContext);
+  const { user, token, API_URL, login } = useContext(AuthContext); // Note: assuming context has login or setUser to update local state.
   const [showProfileDetails, setShowProfileDetails] = useState(false);
+  const [isEditingSem, setIsEditingSem] = useState(false);
+  const [newSemester, setNewSemester] = useState(user?.semester || '');
+  const [updateLoading, setUpdateLoading] = useState(false);
+
+  const handleSemesterUpdate = async () => {
+    if (!newSemester) return;
+    setUpdateLoading(true);
+    try {
+      const res = await axios.put(`${API_URL}/auth/update-semester`, { semester: Number(newSemester) }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.data.success) {
+        // If your AuthContext expects the token and user to be passed back to update state
+        if (typeof login === 'function') {
+           login(res.data.user, res.data.token);
+        } else {
+           // We'll just reload the page as a fallback if the auth context doesn't expose a clean setter
+           window.location.reload();
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update semester.');
+    } finally {
+      setUpdateLoading(false);
+      setIsEditingSem(false);
+    }
+  };
 
   return (
     <header className="dashboard-header">
@@ -32,14 +62,39 @@ const Header = ({ toggleSidebar }) => {
             <p><strong>Name:</strong> {user.name}</p>
             <p><strong>Scholar No:</strong> {user.scholarNumber}</p>
             <p><strong>Section:</strong> {user.section}</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+              <strong>Semester:</strong>
+              {isEditingSem ? (
+                <>
+                  <input 
+                    type="number" 
+                    min="1" max="8" 
+                    value={newSemester} 
+                    onChange={e => setNewSemester(e.target.value)}
+                    style={{ width: '50px', padding: '2px' }}
+                  />
+                  <button onClick={handleSemesterUpdate} disabled={updateLoading} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'green' }}>
+                    <FaCheck />
+                  </button>
+                  <button onClick={() => setIsEditingSem(false)} disabled={updateLoading} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'red' }}>
+                    <FaTimes />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span>{user.semester ? `Semester ${user.semester}` : 'Not set'}</span>
+                  <button onClick={() => setIsEditingSem(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary-color)' }}>
+                    <FaEdit />
+                  </button>
+                </>
+              )}
+            </div>
             <p><strong>Email:</strong> {user.email}</p>
             {user.isAdmin && <p><strong>Role:</strong> Admin</p>}
+            {!user.isAdmin && user.isModerator && <p><strong>Role:</strong> Moderator</p>}
             {user.isPremium && <p><strong>Plan:</strong> ⭐ Premium</p>}
           </div>
         )}
-
-{user.isAdmin && <p><strong>Role:</strong> Admin</p>}
-            {!user.isAdmin && user.isModerator && <p><strong>Role:</strong> Moderator</p>}
       </div>
     </header>
   );
