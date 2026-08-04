@@ -12,9 +12,9 @@ import SupportChat from '../components/Dashboard/SupportChat';
 import AcademicCalendar from '../components/Dashboard/AcademicCalendar';
 import DoubtBoard from '../components/Dashboard/DoubtBoard';
 import TimetableView from '../components/Dashboard/TimetableView';
+import SemesterPrompt from '../components/Dashboard/SemesterPrompt';
 import { SubjectsGridSkeleton, FileListSkeleton } from '../components/Common/Skeleton';
 import { AuthContext } from '../context/AuthContext';
-// FIX: Hook that registers the SW + push subscription after login
 import { usePushNotifications } from '../hooks/usePushNotifications';
 import { useReconnectRefetch } from '../hooks/useReconnectRefetch';
 import './DashboardPage.scss';
@@ -23,7 +23,6 @@ const DashboardPage = () => {
   const { user, API_URL, token } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const [currentSemester, setCurrentSemester] = useState(null);
   const [subjects, setSubjects] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -31,13 +30,11 @@ const DashboardPage = () => {
   const [loadingDashboard, setLoadingDashboard] = useState(true);
   const [loadingMaterials, setLoadingMaterials] = useState(false);
   const [error, setError] = useState(null);
-  // True when a fetch failed purely because we're offline and this data
-  // was never cached on this device — an expected state, not a real error.
   const [dashboardOfflineUncached, setDashboardOfflineUncached] = useState(false);
   const [materialsOfflineUncached, setMaterialsOfflineUncached] = useState(false);
   const [currentView, setCurrentView] = useState('announcements');
 
-  // FIX: Activate push notification subscription for logged-in user
+  // Activate push notification subscription for logged-in user
   usePushNotifications();
 
   const resetStudyMaterialView = useCallback(() => {
@@ -50,14 +47,15 @@ const DashboardPage = () => {
     if (!silent) setLoadingDashboard(true);
     setError(null);
     setDashboardOfflineUncached(false);
-    try {
-      const semesterRes = await axios.get(`${API_URL}/settings/current-semester`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const fetchedSemester = semesterRes.data.data.currentSemester || 3;
-      setCurrentSemester(fetchedSemester);
+    
+    // If the user hasn't set their semester yet, don't try to fetch subjects.
+    if (!user || !user.semester) {
+      setLoadingDashboard(false);
+      return;
+    }
 
-      const subjectsRes = await axios.get(`${API_URL}/subjects?semester=${fetchedSemester}`, {
+    try {
+      const subjectsRes = await axios.get(`${API_URL}/subjects?semester=${user.semester}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (subjectsRes.data.success) {
@@ -75,17 +73,14 @@ const DashboardPage = () => {
     } finally {
       setLoadingDashboard(false);
     }
-  }, [API_URL, token]);
+  }, [API_URL, token, user]);
 
   useEffect(() => {
-    if (user && token) fetchDashboardData();
+    if (user && token && user.semester) fetchDashboardData();
   }, [user, token, fetchDashboardData]);
 
-  // Quietly refresh once connectivity returns — keeps whatever was already
-  // on screen (cached or otherwise) visible while the live data loads in
-  // the background, instead of forcing a full page reload.
   useReconnectRefetch(() => {
-    if (user && token) fetchDashboardData({ silent: true });
+    if (user && token && user.semester) fetchDashboardData({ silent: true });
   }, [user, token, fetchDashboardData]);
 
   useEffect(() => {
@@ -171,89 +166,92 @@ const DashboardPage = () => {
   }
 
   return (
-    <DashboardLayout
-      handleShowStudyMaterials={handleShowStudyMaterials}
-      handleShowAnnouncements={handleShowAnnouncements}
-      handleShowFeedback={handleShowFeedback}
-      handleShowContribute={handleShowContribute}
-      handleShowSupport={handleShowSupport}
-      handleShowCalendar={handleShowCalendar}
-      handleShowDoubts={handleShowDoubts}
-      handleShowTimetable={handleShowTimetable}
-    >
-      <div className="dashboard-page">
-        {currentView === 'announcements' && <Announcements />}
-        {currentView === 'feedback'      && <FeedbackForm />}
-        {currentView === 'contribute'    && <ContributeForm />}
-        {currentView === 'support'       && <SupportChat />}
-        {currentView === 'calendar'      && <AcademicCalendar />}
-        {currentView === 'doubts'        && <DoubtBoard />}
-        {currentView === 'timetable'     && <TimetableView />}
+    <>
+      {user && !user.semester && <SemesterPrompt />}
+      <DashboardLayout
+        handleShowStudyMaterials={handleShowStudyMaterials}
+        handleShowAnnouncements={handleShowAnnouncements}
+        handleShowFeedback={handleShowFeedback}
+        handleShowContribute={handleShowContribute}
+        handleShowSupport={handleShowSupport}
+        handleShowCalendar={handleShowCalendar}
+        handleShowDoubts={handleShowDoubts}
+        handleShowTimetable={handleShowTimetable}
+      >
+        <div className="dashboard-page">
+          {currentView === 'announcements' && <Announcements />}
+          {currentView === 'feedback'      && <FeedbackForm />}
+          {currentView === 'contribute'    && <ContributeForm />}
+          {currentView === 'support'       && <SupportChat />}
+          {currentView === 'calendar'      && <AcademicCalendar />}
+          {currentView === 'doubts'        && <DoubtBoard />}
+          {currentView === 'timetable'     && <TimetableView />}
 
-        {currentView === 'materials' && (
-          <>
-            {selectedSubject && (
-              <div className="navigation-header">
-                {selectedCategory ? (
-                  <button onClick={handleBackToFolders} className="back-button">&larr; Back to Categories</button>
-                ) : (
-                  <button onClick={() => setSelectedSubject(null)} className="back-button">&larr; Back to Subjects</button>
-                )}
-                {selectedCategory  && <h3 className="current-category-title">{selectedCategory} Materials</h3>}
-                {!selectedCategory && <h3 className="current-subject-title">{selectedSubject.name}</h3>}
-              </div>
-            )}
-
-            {!selectedSubject ? (
-              loadingDashboard ? (
-                <SubjectsGridSkeleton count={6} />
-              ) : (
-                <div className="home-view">
-                  <div className="semester-section">
-                    <h2>Current Semester: Semester {currentSemester}</h2>
-                    <div className="subjects-grid">
-                      {subjects.length === 0 ? (
-                        <p className="no-subjects-message">No subjects found for this semester yet.</p>
-                      ) : (
-                        subjects.map((subject) => (
-                          <SubjectCard key={subject._id} subject={subject} onClick={handleSubjectClick} />
-                        ))
-                      )}
-                    </div>
-                  </div>
-
+          {currentView === 'materials' && (
+            <>
+              {selectedSubject && (
+                <div className="navigation-header">
+                  {selectedCategory ? (
+                    <button onClick={handleBackToFolders} className="back-button">&larr; Back to Categories</button>
+                  ) : (
+                    <button onClick={() => setSelectedSubject(null)} className="back-button">&larr; Back to Subjects</button>
+                  )}
+                  {selectedCategory  && <h3 className="current-category-title">{selectedCategory} Materials</h3>}
+                  {!selectedCategory && <h3 className="current-subject-title">{selectedSubject.name}</h3>}
                 </div>
-              )
-            ) : (
-              <>
-                {!selectedCategory ? (
-                  <FolderList onSelectFolder={handleSelectFolder} />
-                ) : loadingMaterials ? (
-                  <FileListSkeleton count={5} />
-                ) : materialsOfflineUncached ? (
-                  <div className="dashboard-error message-box warning">
-                    You're offline and this folder hasn't been opened on this device
-                    before, so it isn't cached yet. It'll load automatically once
-                    you're back online.
-                  </div>
-                ) : error ? (
-                  <div className="dashboard-error message-box error">{error}</div>
+              )}
+
+              {!selectedSubject ? (
+                loadingDashboard ? (
+                  <SubjectsGridSkeleton count={6} />
                 ) : (
-                  <FileList
-                    files={materials}
-                    onSelectFile={handleSelectFile}
-                    selectedCategory={selectedCategory}
-                    selectedSubject={selectedSubject}
-                    apiUrl={API_URL}
-                    token={token}
-                  />
-                )}
-              </>
-            )}
-          </>
-        )}
-      </div>
-    </DashboardLayout>
+                  <div className="home-view">
+                    <div className="semester-section">
+                      <h2>Your Subjects (Semester {user?.semester})</h2>
+                      <div className="subjects-grid">
+                        {subjects.length === 0 ? (
+                          <p className="no-subjects-message">No subjects found for your semester yet.</p>
+                        ) : (
+                          subjects.map((subject) => (
+                            <SubjectCard key={subject._id} subject={subject} onClick={handleSubjectClick} />
+                          ))
+                        )}
+                      </div>
+                    </div>
+
+                  </div>
+                )
+              ) : (
+                <>
+                  {!selectedCategory ? (
+                    <FolderList onSelectFolder={handleSelectFolder} />
+                  ) : loadingMaterials ? (
+                    <FileListSkeleton count={5} />
+                  ) : materialsOfflineUncached ? (
+                    <div className="dashboard-error message-box warning">
+                      You're offline and this folder hasn't been opened on this device
+                      before, so it isn't cached yet. It'll load automatically once
+                      you're back online.
+                    </div>
+                  ) : error ? (
+                    <div className="dashboard-error message-box error">{error}</div>
+                  ) : (
+                    <FileList
+                      files={materials}
+                      onSelectFile={handleSelectFile}
+                      selectedCategory={selectedCategory}
+                      selectedSubject={selectedSubject}
+                      apiUrl={API_URL}
+                      token={token}
+                    />
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </div>
+      </DashboardLayout>
+    </>
   );
 };
 
