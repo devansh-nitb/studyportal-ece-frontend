@@ -40,7 +40,6 @@ const UserManagement = () => {
     if (token) {
       fetchUsers();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const handleEditClick = (user) => {
@@ -131,9 +130,50 @@ const UserManagement = () => {
     }
   };
 
+  const [promoteSemesterInput, setPromoteSemesterInput] = useState('');
+
+  const handlePromoteSemester = async () => {
+    if (!promoteSemesterInput) return;
+    if (window.confirm(`Are you sure you want to promote all students in Semester ${promoteSemesterInput} to Semester ${Number(promoteSemesterInput) + 1}?`)) {
+      setLoading(true);
+      try {
+        const res = await axios.post(`${API_URL}/admin/promote-semester`, { fromSemester: Number(promoteSemesterInput) }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.data.success) {
+          setMessage(res.data.message);
+          setMessageType('success');
+          fetchUsers();
+          setPromoteSemesterInput('');
+        }
+      } catch (err) {
+        setMessage(err.response?.data?.message || 'Failed to promote students.');
+        setMessageType('error');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <div className="admin-section">
-      <h3>User Management</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h3>User Management</h3>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <label>Promote Semester:</label>
+          <input 
+            type="number" 
+            min="1" max="8" 
+            value={promoteSemesterInput} 
+            onChange={(e) => setPromoteSemesterInput(e.target.value)} 
+            placeholder="From Sem"
+            style={{ width: '80px', padding: '5px' }}
+          />
+          <button onClick={handlePromoteSemester} disabled={loading || !promoteSemesterInput} style={{ padding: '6px 12px' }}>
+            Promote
+          </button>
+        </div>
+      </div>
       {message && <div className={`message-box ${messageType}`}>{message}</div>}
 
       {editUser && (
@@ -183,6 +223,16 @@ const UserManagement = () => {
                   value={editUser.section}
                   onChange={handleEditChange}
                   required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="editSemester">Semester</label>
+                <input
+                  type="number"
+                  id="editSemester"
+                  name="semester"
+                  value={editUser.semester || ''}
+                  onChange={handleEditChange}
                 />
               </div>
               <div className="form-group checkbox-group">
@@ -243,6 +293,7 @@ const UserManagement = () => {
                 <th>Scholar No.</th>
                 <th>Email</th>
                 <th>Section</th>
+                <th>Semester</th>
                 <th>Verified</th>
                 <th>Role</th>
                 <th>Premium</th>
@@ -256,6 +307,7 @@ const UserManagement = () => {
                   <td>{userItem.scholarNumber}</td>
                   <td>{userItem.email}</td>
                   <td>{userItem.section}</td>
+                  <td>{userItem.semester || 'N/A'}</td>
                   <td>{userItem.isVerified ? 'Yes' : 'No'}</td>
                   <td>{userItem.isAdmin ? 'Admin' : userItem.isModerator ? 'Moderator' : 'User'}</td>
                   <td>

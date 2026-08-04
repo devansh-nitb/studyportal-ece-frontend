@@ -7,16 +7,19 @@ import './AdminForms.scss';
 const UploadMaterial = () => {
   const { API_URL, token } = useContext(AuthContext);
   const [formData, setFormData] = useState({
-    title: '',
     fileType: 'PDF', // Default to PDF
-    file: null,
     externalUrl: '', 
+    title: '', // Only used if URL is selected
     subject: '',
     category: '',
     semester: '',
     isDownloadEnabled: false,
     isPremium: false,
   });
+  
+  // For bulk file selection
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
   const [subjects, setSubjects] = useState([]);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState(''); 
@@ -50,11 +53,32 @@ const UploadMaterial = () => {
   }, [API_URL, token]);
 
   const onChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : (type === 'file' ? files[0] : value),
+      [name]: type === 'checkbox' ? checked : value,
     });
+  };
+
+  const handleFileSelect = (e) => {
+    const files = Array.from(e.target.files);
+    const newSelectedFiles = files.map(file => ({
+      fileObj: file,
+      customTitle: file.name // Default title is the original file name
+    }));
+    setSelectedFiles(prev => [...prev, ...newSelectedFiles]);
+  };
+
+  const handleCustomTitleChange = (index, newTitle) => {
+    setSelectedFiles(prev => {
+      const updated = [...prev];
+      updated[index].customTitle = newTitle;
+      return updated;
+    });
+  };
+
+  const removeSelectedFile = (index) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const onSubmit = async (e) => {
@@ -63,89 +87,105 @@ const UploadMaterial = () => {
     setMessage('');
     setMessageType('');
 
-    const data = new FormData();
-    data.append('title', formData.title);
-    data.append('fileType', formData.fileType);
-    data.append('subject', formData.subject);
-    data.append('category', formData.category);
-    data.append('semester', formData.semester);
-    data.append('isDownloadEnabled', formData.isDownloadEnabled);
-    data.append('isPremium', formData.isPremium);
-
     if (formData.fileType === 'URL') {
+      if (!formData.title || !formData.externalUrl) {
+        setMessage('Please provide a title and external URL.');
+        setMessageType('error');
+        setLoading(false);
+        return;
+      }
+      
+      const data = new FormData();
+      data.append('title', formData.title);
+      data.append('fileType', formData.fileType);
+      data.append('subject', formData.subject);
+      data.append('category', formData.category);
+      data.append('semester', formData.semester);
+      data.append('isDownloadEnabled', formData.isDownloadEnabled);
+      data.append('isPremium', formData.isPremium);
       data.append('externalUrl', formData.externalUrl);
-    } else if (formData.file) {
-      data.append('file', formData.file); 
-    } else {
-      setMessage('Please select a file or provide a URL.');
+
+      try {
+        const res = await axios.post(`${API_URL}/materials`, data, {
+          headers: {
+            'Content-Type': 'multipart/form-data', 
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (res.data.success) {
+          setMessage('Study material URL uploaded successfully!');
+          setMessageType('success');
+          setFormData({ ...formData, title: '', externalUrl: '' });
+        } else {
+          setMessage(res.data.message || 'Failed to upload study material URL.');
+          setMessageType('error');
+        }
+      } catch (err) {
+        setMessage(err.response?.data?.message || 'Upload failed.');
+        setMessageType('error');
+      }
+      setLoading(false);
+      return;
+    }
+
+    if (selectedFiles.length === 0) {
+      setMessage('Please select at least one file to upload.');
       setMessageType('error');
       setLoading(false);
       return;
     }
 
-    try {
-      const res = await axios.post(`${API_URL}/materials`, data, {
-        headers: {
-          'Content-Type': 'multipart/form-data', 
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    let successCount = 0;
+    let failCount = 0;
 
-      if (res.data.success) {
-        setMessage('Study material uploaded successfully!');
-        setMessageType('success');
-        setFormData({
-          title: '',
-          fileType: 'PDF',
-          file: null,
-          externalUrl: '',
-          subject: '',
-          category: '',
-          semester: '',
-          isDownloadEnabled: false,
-          isPremium: false,
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const { fileObj, customTitle } = selectedFiles[i];
+      const data = new FormData();
+      data.append('title', customTitle);
+      data.append('fileType', formData.fileType);
+      data.append('subject', formData.subject);
+      data.append('category', formData.category);
+      data.append('semester', formData.semester);
+      data.append('isDownloadEnabled', formData.isDownloadEnabled);
+      data.append('isPremium', formData.isPremium);
+      data.append('file', fileObj); 
+
+      try {
+        const res = await axios.post(`${API_URL}/materials`, data, {
+          headers: {
+            'Content-Type': 'multipart/form-data', 
+            Authorization: `Bearer ${token}`,
+          },
         });
-        const fileInput = document.getElementById('file');
-        if (fileInput) fileInput.value = '';
-      } else {
-        setMessage(res.data.message || 'Failed to upload study material.');
-        setMessageType('error');
+        if (res.data.success) successCount++;
+        else failCount++;
+      } catch (err) {
+        failCount++;
       }
-    } catch (err) {
-      console.error('Upload error:', err.response?.data?.message || err.message);
-      setMessage(err.response?.data?.message || 'Upload failed. Please check your inputs.');
-      setMessageType('error');
-    } finally {
-      setLoading(false);
     }
+
+    if (failCount === 0) {
+      setMessage(`Successfully uploaded ${successCount} file(s)!`);
+      setMessageType('success');
+      setSelectedFiles([]);
+      const fileInput = document.getElementById('file');
+      if (fileInput) fileInput.value = '';
+    } else {
+      setMessage(`Uploaded ${successCount} files, but ${failCount} failed.`);
+      setMessageType(successCount > 0 ? 'warning' : 'error');
+    }
+    
+    setLoading(false);
   };
 
-  if (subjectsLoading) {
-    return <LoadingSpinner />;
-  }
-
-  if (subjectsError) {
-    return <div className="message-box error">{subjectsError}</div>;
-  }
+  if (subjectsLoading) return <LoadingSpinner />;
+  if (subjectsError) return <div className="message-box error">{subjectsError}</div>;
 
   return (
     <div className="admin-form-container">
       <h3>Upload New Study Material</h3>
       {message && <div className={`message-box ${messageType}`}>{message}</div>}
       <form onSubmit={onSubmit}>
-        <div className="form-group">
-          <label htmlFor="title">Title</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={onChange}
-            required
-            aria-label="Material Title"
-          />
-        </div>
-
         <div className="form-group">
           <label htmlFor="fileType">File Type</label>
           <select
@@ -154,7 +194,6 @@ const UploadMaterial = () => {
             value={formData.fileType}
             onChange={onChange}
             required
-            aria-label="File Type"
           >
             <option value="PDF">PDF</option>
             <option value="Image">Image</option>
@@ -163,30 +202,68 @@ const UploadMaterial = () => {
         </div>
 
         {formData.fileType === 'URL' ? (
-          <div className="form-group">
-            <label htmlFor="externalUrl">External URL (e.g., Dropbox link)</label>
-            <input
-              type="url"
-              id="externalUrl"
-              name="externalUrl"
-              value={formData.externalUrl}
-              onChange={onChange}
-              required
-              aria-label="External URL"
-              placeholder="https://example.com/document.pdf"
-            />
-          </div>
+          <>
+            <div className="form-group">
+              <label htmlFor="title">Title</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={onChange}
+                required
+                placeholder="Title for the URL"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="externalUrl">External URL (e.g., Dropbox link)</label>
+              <input
+                type="url"
+                id="externalUrl"
+                name="externalUrl"
+                value={formData.externalUrl}
+                onChange={onChange}
+                required
+                placeholder="https://example.com/document.pdf"
+              />
+            </div>
+          </>
         ) : (
           <div className="form-group">
-            <label htmlFor="file">File (PDF only)</label>
+            <label htmlFor="file">Select Files ({formData.fileType} only)</label>
             <input
               type="file"
               id="file"
               name="file"
-              onChange={onChange}
-              required={!formData.externalUrl} 
-              aria-label="Upload File"
+              multiple // Allow bulk selection
+              onChange={handleFileSelect}
+              accept={formData.fileType === 'PDF' ? '.pdf' : 'image/*'}
             />
+          </div>
+        )}
+
+        {/* Display selected files for bulk upload */}
+        {formData.fileType !== 'URL' && selectedFiles.length > 0 && (
+          <div className="selected-files-list">
+            <h4>Selected Files ({selectedFiles.length})</h4>
+            {selectedFiles.map((fileData, index) => (
+              <div key={index} className="selected-file-row" style={{ display: 'flex', gap: '10px', marginBottom: '10px', alignItems: 'center' }}>
+                <span style={{flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                  {fileData.fileObj.name}
+                </span>
+                <input
+                  type="text"
+                  value={fileData.customTitle}
+                  onChange={(e) => handleCustomTitleChange(index, e.target.value)}
+                  placeholder="Custom Name (Optional)"
+                  style={{ flex: 1, padding: '5px' }}
+                  required
+                />
+                <button type="button" onClick={() => removeSelectedFile(index)} style={{ padding: '5px 10px', background: '#e74c3c', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                  X
+                </button>
+              </div>
+            ))}
           </div>
         )}
 
@@ -198,12 +275,11 @@ const UploadMaterial = () => {
             value={formData.subject}
             onChange={onChange}
             required
-            aria-label="Subject"
           >
             <option value="">Select Subject</option>
             {subjects.map((sub) => (
               <option key={sub._id} value={sub._id}>
-                {sub.name} (Sem {sub.semester})
+                {sub.name} (Sem {sub.semesters ? sub.semesters.join(', ') : sub.semester})
               </option>
             ))}
           </select>
@@ -217,7 +293,6 @@ const UploadMaterial = () => {
             value={formData.category}
             onChange={onChange}
             required
-            aria-label="Category"
           >
             <option value="">Select Category</option>
             <option value="Notes">Notes</option>
@@ -228,7 +303,7 @@ const UploadMaterial = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="semester">Semester</label>
+          <label htmlFor="semester">Target Semester</label>
           <input
             type="number"
             id="semester"
@@ -238,7 +313,6 @@ const UploadMaterial = () => {
             min="1"
             max="8"
             required
-            aria-label="Semester"
           />
         </div>
 
@@ -249,7 +323,6 @@ const UploadMaterial = () => {
             name="isDownloadEnabled"
             checked={formData.isDownloadEnabled}
             onChange={onChange}
-            aria-label="Enable Download"
           />
           <label htmlFor="isDownloadEnabled" >Enable Download</label>
         </div>
@@ -261,13 +334,12 @@ const UploadMaterial = () => {
             name="isPremium"
             checked={formData.isPremium}
             onChange={onChange}
-            aria-label="Premium Only"
           />
           <label htmlFor="isPremium">⭐ Premium Only</label>
         </div>
 
         <button type="submit" disabled={loading} className='upload-material-btn'>
-          {loading ? 'Uploading...' : 'Upload Material'}
+          {loading ? 'Uploading...' : `Upload ${selectedFiles.length > 0 ? selectedFiles.length : ''} Material(s)`}
         </button>
       </form>
     </div>

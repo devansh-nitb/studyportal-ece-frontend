@@ -12,7 +12,7 @@ const ManageSubjects = () => {
     _id: null,
     name: '',
     code: '',
-    semester: '',
+    semesters: [], // Changed to array
     logoUrl: '',
   });
   const [message, setMessage] = useState('');
@@ -45,17 +45,21 @@ const ManageSubjects = () => {
     if (token) {
       fetchSubjects();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]); 
 
   const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleSemesterSelect = (e) => {
+    const selectedOptions = Array.from(e.target.selectedOptions, option => Number(option.value));
+    setFormData({ ...formData, semesters: selectedOptions });
+  };
 
   const onEditClick = (subject) => {
     setFormData({
       _id: subject._id,
       name: subject.name,
       code: subject.code,
-      semester: subject.semester,
+      semesters: subject.semesters || [subject.semester], // Handle old DB entries
       logoUrl: subject.logoUrl,
     });
     setMessage('');
@@ -67,7 +71,7 @@ const ManageSubjects = () => {
       _id: null,
       name: '',
       code: '',
-      semester: '',
+      semesters: [],
       logoUrl: '',
     });
     setMessage('');
@@ -76,6 +80,12 @@ const ManageSubjects = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (formData.semesters.length === 0) {
+      setMessage('Please select at least one semester.');
+      setMessageType('error');
+      return;
+    }
+
     setLoading(true);
     setMessage('');
     setMessageType('');
@@ -83,7 +93,6 @@ const ManageSubjects = () => {
     try {
       let res;
       if (formData._id) {
-        
         res = await axios.put(`${API_URL}/subjects/${formData._id}`, formData, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -168,18 +177,21 @@ const ManageSubjects = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="semester">Semester</label>
-          <input
-            type="number"
-            id="semester"
-            name="semester"
-            value={formData.semester}
-            onChange={onChange}
-            min="1"
-            max="8"
+          <label htmlFor="semesters">Semesters (Hold Ctrl/Cmd to select multiple)</label>
+          <select
+            id="semesters"
+            name="semesters"
+            multiple
+            value={formData.semesters}
+            onChange={handleSemesterSelect}
             required
-            aria-label="Semester"
-          />
+            aria-label="Semesters"
+            style={{ height: '120px' }}
+          >
+            {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
+              <option key={sem} value={sem}>Semester {sem}</option>
+            ))}
+          </select>
         </div>
         <div className="form-group">
           <label htmlFor="logoUrl">Logo URL (Optional)</label>
@@ -219,7 +231,7 @@ const ManageSubjects = () => {
               <tr>
                 <th>Name</th>
                 <th>Code</th>
-                <th>Semester</th>
+                <th>Semesters</th>
                 <th>Logo</th>
                 <th>Actions</th>
               </tr>
@@ -229,7 +241,7 @@ const ManageSubjects = () => {
                 <tr key={subject._id}>
                   <td>{subject.name}</td>
                   <td>{subject.code}</td>
-                  <td>{subject.semester}</td>
+                  <td>{subject.semesters ? subject.semesters.join(', ') : subject.semester}</td>
                   <td>
                     <img
                       src={subject.logoUrl || 'https://placehold.co/50x50/CCCCCC/000000?text=Logo'}
