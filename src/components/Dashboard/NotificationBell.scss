@@ -7,18 +7,20 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--text-color);
-    font-size: 1.2rem;
+    color: var(--primary-color); /* Match user icon color */
+    font-size: 1.5rem; /* Increased size */
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
+    width: 44px; /* Slightly larger hit area */
+    height: 44px;
     border-radius: 50%;
-    transition: background 0.15s;
+    transition: background-color 0.15s ease;
+    padding: 0;
+    margin-right: 0.5rem; /* Add some space before profile icon */
 
-    &:hover { background: var(--input-background); }
+    &:hover { background-color: var(--hover-background); color: var(--button-text); }
   }
 
   &__badge {
