@@ -18,7 +18,6 @@ const PERIOD_TIMES = {
   5: '2:30–3:30',  6: '3:30–4:30',   7: '4:30–5:30',
 };
 const TYPES = ['Lecture','Lab','Tutorial','Free'];
-const SECTIONS = ['CSE-1', 'CSE-2', 'CSE-3'];
 
 function emptySchedule() {
   return DAYS.map(day => ({
@@ -29,7 +28,8 @@ function emptySchedule() {
 
 const AdminTimetable = () => {
   const { token, API_URL } = useContext(AuthContext);
-  const [section,  setSection]  = useState(SECTIONS[0]);
+  const [availableSections, setAvailableSections] = useState([]);
+  const [section,  setSection]  = useState('');
   const [semester, setSemester] = useState(3);
   const [schedule, setSchedule] = useState(emptySchedule());
   const [loading,  setLoading]  = useState(false);
@@ -70,7 +70,26 @@ const AdminTimetable = () => {
     }
   };
 
-  useEffect(() => { fetchTimetable(); }, [section, semester]); // eslint-disable-line
+  useEffect(() => {
+    const fetchSections = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/settings/sections`);
+        if (res.data.success && res.data.data.sections) {
+          setAvailableSections(res.data.data.sections);
+          if (res.data.data.sections.length > 0 && !section) {
+            setSection(res.data.data.sections[0]);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching sections:', err);
+      }
+    };
+    fetchSections();
+  }, [API_URL]);
+
+  useEffect(() => {
+    if (section) fetchTimetable();
+  }, [section, semester]); // eslint-disable-line
 
   const updateSlot = (day, period, field, value) => {
     setSchedule(prev => prev.map(d => d.day !== day ? d : {
@@ -120,7 +139,7 @@ const AdminTimetable = () => {
         <label className="att-label">
           Section
           <select className="att-input" value={section} onChange={e => setSection(e.target.value)}>
-            {SECTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+            {availableSections.map(s => <option key={s} value={s}>{s}</option>)}
           </select>
         </label>
         <label className="att-label">

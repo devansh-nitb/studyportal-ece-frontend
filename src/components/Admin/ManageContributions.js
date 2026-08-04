@@ -24,7 +24,6 @@ const ManageContributions = () => {
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { fetchContributions(); }, [filter]);
 
   const handleAction = async (id, action) => {
