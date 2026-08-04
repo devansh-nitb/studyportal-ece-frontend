@@ -6,7 +6,7 @@ import NotificationBell from './NotificationBell';
 import './Header.scss';
 
 const Header = ({ toggleSidebar }) => {
-  const { user, token, API_URL, login } = useContext(AuthContext); // Note: assuming context has login or setUser to update local state.
+  const { user, token, API_URL, checkAuthStatus } = useContext(AuthContext);
   const [showProfileDetails, setShowProfileDetails] = useState(false);
   const [isEditingSem, setIsEditingSem] = useState(false);
   const [newSemester, setNewSemester] = useState(user?.semester || '');
@@ -20,11 +20,9 @@ const Header = ({ toggleSidebar }) => {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
-        // If your AuthContext expects the token and user to be passed back to update state
-        if (typeof login === 'function') {
-           login(res.data.user, res.data.token);
+        if (typeof checkAuthStatus === 'function') {
+           await checkAuthStatus();
         } else {
-           // We'll just reload the page as a fallback if the auth context doesn't expose a clean setter
            window.location.reload();
         }
       }

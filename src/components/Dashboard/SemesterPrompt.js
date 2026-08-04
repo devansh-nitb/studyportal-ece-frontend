@@ -4,7 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import './SemesterPrompt.scss';
 
 const SemesterPrompt = ({ onComplete }) => {
-  const { user, token, API_URL, login } = useContext(AuthContext);
+  const { user, token, API_URL, checkAuthStatus } = useContext(AuthContext);
   const [semester, setSemester] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -24,8 +24,10 @@ const SemesterPrompt = ({ onComplete }) => {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
-        if (typeof login === 'function') {
-           login(res.data.user, res.data.token);
+        if (typeof checkAuthStatus === 'function') {
+           await checkAuthStatus();
+        } else {
+           window.location.reload();
         }
         if (onComplete) onComplete();
       } else {
