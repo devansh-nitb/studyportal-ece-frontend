@@ -17,9 +17,14 @@ const ManageMaterials = () => {
   const [messageType, setMessageType] = useState('');
   const [busyId, setBusyId] = useState(null); // material currently being updated/deleted
 
-  // Inline rename state
+  // Inline edit state
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState('');
+  const [editSubject, setEditSubject] = useState('');
+  const [editCategory, setEditCategory] = useState('');
+  const [editSemester, setEditSemester] = useState('');
+  
+  const [subjects, setSubjects] = useState([]);
 
   // Filters
   const [search, setSearch] = useState('');
@@ -46,8 +51,24 @@ const ManageMaterials = () => {
     }
   };
 
+  const fetchSubjects = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/subjects`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.data.success) {
+        setSubjects(res.data.data);
+      }
+    } catch (err) {
+      console.error('Error fetching subjects:', err);
+    }
+  };
+
   useEffect(() => {
-    if (token) fetchMaterials();
+    if (token) {
+      fetchMaterials();
+      fetchSubjects();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
@@ -76,24 +97,38 @@ const ManageMaterials = () => {
     }
   };
 
-  const startRename = (material) => {
+  const startEdit = (material) => {
     setEditingId(material._id);
     setEditTitle(material.title);
+    setEditSubject(material.subject?._id || '');
+    setEditCategory(material.category || '');
+    setEditSemester(material.semester || '');
   };
 
-  const cancelRename = () => {
+  const cancelEdit = () => {
     setEditingId(null);
     setEditTitle('');
+    setEditSubject('');
+    setEditCategory('');
+    setEditSemester('');
   };
 
-  const submitRename = async (id) => {
-    const trimmed = editTitle.trim();
-    if (!trimmed) {
+  const submitEdit = async (id) => {
+    const trimmedTitle = editTitle.trim();
+    if (!trimmedTitle) {
       flash('Title cannot be empty.', 'error');
       return;
     }
-    await patchMaterial(id, { title: trimmed }, 'Renamed successfully!');
-    cancelRename();
+    await patchMaterial(id, { 
+      title: trimmedTitle, 
+      subject: editSubject, 
+      category: editCategory, 
+      semester: editSemester 
+    }, 'Material updated successfully!');
+    
+    // We need to fetch materials again because subject population might change
+    fetchMaterials();
+    cancelEdit();
   };
 
   const togglePremium = (material) => {
@@ -212,17 +247,60 @@ const ManageMaterials = () => {
                           autoFocus
                           aria-label="Edit title"
                           onKeyDown={e => {
-                            if (e.key === 'Enter') submitRename(material._id);
-                            if (e.key === 'Escape') cancelRename();
+                            if (e.key === 'Enter') submitEdit(material._id);
+                            if (e.key === 'Escape') cancelEdit();
                           }}
                         />
                       ) : (
                         material.title
                       )}
                     </td>
-                    <td>{material.subject?.name || '—'}</td>
-                    <td>{material.category}</td>
-                    <td>{material.semester}</td>
+                    <td>
+                      {editingId === material._id ? (
+                        <select
+                          value={editSubject}
+                          onChange={e => {
+                            const newSubjectId = e.target.value;
+                            setEditSubject(newSubjectId);
+                            const selectedSub = subjects.find(s => s._id === newSubjectId);
+                            if (selectedSub) {
+                              setEditSemester(selectedSub.semesters ? selectedSub.semesters[0] : selectedSub.semester);
+                            }
+                          }}
+                        >
+                          <option value="">Select Subject</option>
+                          {subjects.map(s => (
+                            <option key={s._id} value={s._id}>{s.name}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        material.subject?.name || '—'
+                      )}
+                    </td>
+                    <td>
+                      {editingId === material._id ? (
+                        <select value={editCategory} onChange={e => setEditCategory(e.target.value)}>
+                          <option value="">Select Category</option>
+                          {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      ) : (
+                        material.category
+                      )}
+                    </td>
+                    <td>
+                      {editingId === material._id ? (
+                        <select value={editSemester} onChange={e => setEditSemester(e.target.value)}>
+                          {(() => {
+                            const selectedSub = subjects.find(s => s._id === editSubject);
+                            if (!selectedSub) return <option value="">—</option>;
+                            const sems = selectedSub.semesters || [selectedSub.semester];
+                            return sems.map(s => <option key={s} value={s}>{s}</option>);
+                          })()}
+                        </select>
+                      ) : (
+                        material.semester
+                      )}
+                    </td>
                     <td>{material.fileType}</td>
                     <td>
                       <button
@@ -247,12 +325,12 @@ const ManageMaterials = () => {
                     <td>
                       {editingId === material._id ? (
                         <>
-                          <button className="btn-edit" disabled={isBusy} onClick={() => submitRename(material._id)}>Save</button>
-                          <button className="btn-delete" disabled={isBusy} onClick={cancelRename}>Cancel</button>
+                          <button className="btn-edit" disabled={isBusy} onClick={() => submitEdit(material._id)}>Save</button>
+                          <button className="btn-delete" disabled={isBusy} onClick={cancelEdit}>Cancel</button>
                         </>
                       ) : (
                         <>
-                          <button className="btn-edit" disabled={isBusy} onClick={() => startRename(material)}>Rename</button>
+                          <button className="btn-edit" disabled={isBusy} onClick={() => startEdit(material)}>Edit</button>
                           <button className="btn-delete" disabled={isBusy} onClick={() => onDelete(material)}>
                             {isBusy ? '...' : 'Delete'}
                           </button>

@@ -54,10 +54,19 @@ const UploadMaterial = () => {
 
   const onChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
+    const newFormData = {
       ...formData,
       [name]: type === 'checkbox' ? checked : value,
-    });
+    };
+    if (name === 'subject') {
+      const selectedSub = subjects.find(s => s._id === value);
+      if (selectedSub) {
+        newFormData.semester = selectedSub.semesters ? selectedSub.semesters[0] : selectedSub.semester;
+      } else {
+        newFormData.semester = '';
+      }
+    }
+    setFormData(newFormData);
   };
 
   const handleFileSelect = (e) => {
@@ -302,19 +311,7 @@ const UploadMaterial = () => {
           </select>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="semester">Target Semester</label>
-          <input
-            type="number"
-            id="semester"
-            name="semester"
-            value={formData.semester}
-            onChange={onChange}
-            min="1"
-            max="8"
-            required
-          />
-        </div>
+
 
         <div className="form-group checkbox-group">
           <input
