@@ -199,6 +199,8 @@
       max-width: 600px;
       padding: $spacing-xl;
       position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
 
       h4 {
         color: var(--primary-color);
