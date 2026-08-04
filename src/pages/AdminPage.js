@@ -12,6 +12,7 @@ import AdminSupportPanel from '../components/Admin/AdminSupportPanel';
 import PremiumSettings from '../components/Admin/PremiumSettings';
 import AdminTimetable from '../components/Admin/AdminTimetable';
 import AdminNotifications from '../components/Admin/AdminNotifications';
+import ManageSections from '../components/Admin/ManageSections';
 import './AdminPage.scss';
 
 // Tabs available to moderators (the subset requested: upload/manage
@@ -19,7 +20,7 @@ import './AdminPage.scss';
 // notifications). Full admins see every tab defined below this list.
 const MODERATOR_TAB_KEYS = [
   'upload', 'manageMaterials', 'contributions', 'manageAnnouncements',
-  'accessLogs', 'timetable', 'notifications',
+  'accessLogs', 'timetable', 'notifications', 'sections'
 ];
 
 const AdminPage = () => {
@@ -38,6 +39,7 @@ const AdminPage = () => {
     { key: 'accessLogs',     label: 'Access Logs' },
     { key: 'timetable',      label: '📅 Timetable' },
     { key: 'notifications',  label: '🔔 Notifications' },
+    { key: 'sections',       label: '🏫 Sections' },
     { key: 'premiumSettings',label: '⭐ Premium' },
   ];
 
@@ -63,6 +65,7 @@ const AdminPage = () => {
       case 'premiumSettings':     return isFullAdmin ? <PremiumSettings /> : null;
       case 'timetable':           return <AdminTimetable />;
       case 'notifications':       return <AdminNotifications />;
+      case 'sections':            return <ManageSections />;
       default:                    return <UploadMaterial />;
     }
   };
