@@ -4,7 +4,6 @@ import { AuthContext } from '../../context/AuthContext';
 import { useReconnectRefetch } from '../../hooks/useReconnectRefetch';
 import '../Common/Skeleton.scss';
 import './Announcements.scss';
-import ExamCountdown from './ExamCountdown';
 
 // Skeleton for a single announcement card — mirrors the real .announcement-item layout
 const AnnouncementSkeleton = () => (
@@ -102,7 +101,6 @@ const Announcements = () => {
 
   return (
     <div className="announcements-container">
-      <ExamCountdown />
       <h2>Announcements</h2>
       {announcements.length === 0 ? (
         <p className="no-announcements">No announcements available at the moment.</p>

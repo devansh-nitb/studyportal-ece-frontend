@@ -2,10 +2,11 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import {
-  FaChevronLeft, FaChevronRight, FaCalendarAlt,
+  FaChevronLeft, FaChevronRight, FaCalendarAlt, FaCrown,
   FaGraduationCap, FaUmbrellaBeach, FaFlask, FaClipboardList, FaInfoCircle, FaUser, FaPlus
 } from 'react-icons/fa';
 import './AcademicCalendar.scss';
+import ExamCountdown from './ExamCountdown';
 
 // ── Seed data from images ──────────────────────────────────────────────────
 export const SEED_HOLIDAYS = [
@@ -126,8 +127,10 @@ function inRange(date, start, end) {
 
 // ── Main component ───────────────────────────────────────────────────────────
 const AcademicCalendar = () => {
-  const { user, API_URL, token } = useContext(AuthContext);
+  const { user, API_URL, token, premiumEnabled } = useContext(AuthContext);
   const isAdmin = user?.isAdmin;
+  const isPremium = user?.isPremium;
+  const canView = isAdmin || (premiumEnabled && isPremium);
 
   const today = new Date();
   const [viewYear, setViewYear] = useState(today.getFullYear());
@@ -330,6 +333,17 @@ const AcademicCalendar = () => {
     await saveToBackend(events, updated);
   };
 
+  // ── Access gate ──────────────────────────────────────────────
+  if (!canView) {
+    return (
+      <div className="cal-locked">
+        <FaCrown className="cal-locked__icon" />
+        <h3>Premium Feature</h3>
+        <p>The Academic Calendar is available to premium members. Contact your admin to upgrade.</p>
+      </div>
+    );
+  }
+
   // ── Upcoming events list ─────────────────────────────────────
   const upcoming = [
     ...events,
@@ -342,6 +356,7 @@ const AcademicCalendar = () => {
 
   return (
     <div className="academic-calendar">
+      <ExamCountdown />
       {/* Header */}
       <div className="cal-header">
         <div className="cal-header__title">
